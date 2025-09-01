@@ -4,17 +4,22 @@
 #include "Player/Inv_PlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Widgets/HUD/Inv_HUDWidget.h"
 
 
 void AInv_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Ìí¼Ó IMC
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	if (IsValid(Subsystem))
 	{
 		Subsystem->AddMappingContext(DefaultIMC, 0);
 	}
+
+	// ´´½¨ HUD
+	CreateHUDWidget();
 }
 
 void AInv_PlayerController::SetupInputComponent()
@@ -28,4 +33,16 @@ void AInv_PlayerController::SetupInputComponent()
 void AInv_PlayerController::PrimaryInteract()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Primary Interact"));
+}
+
+void AInv_PlayerController::CreateHUDWidget()
+{
+	if (!IsLocalController()) return;
+	
+	HUDWidget = CreateWidget<UInv_HUDWidget>(this, HUDWidgetClass);
+	if (HUDWidget)
+	{
+		HUDWidget->AddToViewport();
+	}
+
 }
