@@ -14,12 +14,19 @@ UCLASS()
 class INVENTORY_API AInv_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
-
+public:
+	AInv_PlayerController();
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void Tick(float DeltaSeconds) override;
 	
 private:
+
+	void PrimaryInteract();
+	void CreateHUDWidget();
+	void TraceForItem();
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	TObjectPtr<UInputMappingContext> DefaultIMC;
@@ -33,7 +40,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<UInv_HUDWidget> HUDWidget;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+	double TraceLength;
 
-	void PrimaryInteract();
-	void CreateHUDWidget();
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+	TEnumAsByte<ECollisionChannel> ItemTraceChannel;
+
+	TWeakObjectPtr<AActor> ThisActor;
+	TWeakObjectPtr<AActor> LastActor;
+
 };
