@@ -27,18 +27,21 @@ private:
 	void CreateHUDWidget();
 	void TraceForItem();
 
-
+	/* Input */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	TObjectPtr<UInputMappingContext> DefaultIMC;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	TObjectPtr<UInputAction> PrimaryInteractAction;
+	/* Input */
 
+	/* Viewport */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	TSubclassOf<UInv_HUDWidget> HUDWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UInv_HUDWidget> HUDWidget;
+	/* Viewport */
 
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	double TraceLength;
