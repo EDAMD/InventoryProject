@@ -8,6 +8,7 @@
 
 class UWidgetSwitcher;
 class UInv_InventoryGrid;
+class UButton;
 
 /**
  * 
@@ -16,6 +17,9 @@ UCLASS()
 class INVENTORY_API UInv_SpatialInventory : public UInv_InventoryBase
 {
 	GENERATED_BODY()
+
+public:
+	virtual void NativeOnInitialized() override;
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -29,5 +33,28 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UInv_InventoryGrid> Grid_Craftables;
-	
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_Equippables;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_Consumables;
+
+	UPROPERTY(meta = (BindWidget))	
+	TObjectPtr<UButton> Button_Craftables;
+
+	UFUNCTION()
+	void ShowEquippables();
+
+	UFUNCTION()
+	void ShowConsumables();
+
+	UFUNCTION()
+	void ShowCraftables();
+
+	void SetActiveGrid(UInv_InventoryGrid* Grid, UButton* Button);
+
+	void DisableButton(UButton* Button);
+
+
 };
