@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UInputAction;
 class UInv_HUDWidget;
+class UInv_InventoryComponent;
 
 UCLASS()
 class INVENTORY_API AInv_PlayerController : public APlayerController
@@ -16,6 +17,9 @@ class INVENTORY_API AInv_PlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AInv_PlayerController();
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	void ToggleInventory();
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -27,12 +31,17 @@ private:
 	void CreateHUDWidget();
 	void TraceForItem();
 
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
+
 	/* Input */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	TObjectPtr<UInputMappingContext> DefaultIMC;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	TObjectPtr<UInputAction> PrimaryInteractAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+	TObjectPtr<UInputAction> ToggleInventoryAction;
 	/* Input */
 
 	/* Viewport */

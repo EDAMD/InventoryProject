@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Items/Components/Inv_ItemComponent.h"
 #include "Interaction/Inv_Highlightable.h"
+#include "InventoryManagement/Components/Inv_InventoryComponent.h"
 
 
 AInv_PlayerController::AInv_PlayerController()
@@ -17,6 +18,13 @@ AInv_PlayerController::AInv_PlayerController()
 	TraceLength = 500.0;
 
 	ItemTraceChannel = ECollisionChannel::ECC_GameTraceChannel1;
+}
+
+void AInv_PlayerController::ToggleInventory()
+{
+	if (!InventoryComponent.IsValid()) return;
+
+	InventoryComponent->ToggleInventoryMenu();
 }
 
 void AInv_PlayerController::BeginPlay()
@@ -30,6 +38,8 @@ void AInv_PlayerController::BeginPlay()
 		Subsystem->AddMappingContext(DefaultIMC, 0);
 	}
 
+	InventoryComponent = FindComponentByClass<UInv_InventoryComponent>();
+
 	// ´´½¨ HUD
 	CreateHUDWidget();
 }
@@ -40,6 +50,7 @@ void AInv_PlayerController::SetupInputComponent()
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 	EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &AInv_PlayerController::PrimaryInteract);
+	EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Started, this, &AInv_PlayerController::ToggleInventory);
 }
 
 void AInv_PlayerController::Tick(float DeltaSeconds)

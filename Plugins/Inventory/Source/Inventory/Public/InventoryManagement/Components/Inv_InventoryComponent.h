@@ -19,6 +19,7 @@ class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 public:	
 	UInv_InventoryComponent();
 
+	void ToggleInventoryMenu();
 protected:
 	virtual void BeginPlay() override;
 
@@ -32,4 +33,10 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UInv_InventoryBase> InventoryMenu;
+
+	bool bInventoryMenuOpen;
+
+	void OpenInventoryMenu();
+
+	void CloseInventoryMenu();
 };
