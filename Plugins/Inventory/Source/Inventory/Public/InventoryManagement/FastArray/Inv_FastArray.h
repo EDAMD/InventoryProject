@@ -38,7 +38,7 @@ struct FInv_InventoryArray : public FFastArraySerializer
 	FInv_InventoryArray() : OwnerComponent(nullptr) {}
 	FInv_InventoryArray(UActorComponent* InOwner) : OwnerComponent(InOwner) {}
 
-	TArray<UInv_InventoryItem> GetAllItems() const;
+	TArray<UInv_InventoryItem*> GetAllItems() const;
 
 	/* FFastArraySerializer Contract */
 	void PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize);

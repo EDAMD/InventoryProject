@@ -7,6 +7,9 @@
 #include "Inv_InventoryComponent.generated.h"
 
 class UInv_InventoryBase;
+class UInv_InventoryItem;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInventoryItemChange, UInv_InventoryItem*, Item);
 
 /**
  * Inventory Management 负责创建并管理 InventoryMenu, 由PlayerController作为Owner
@@ -20,6 +23,10 @@ public:
 	UInv_InventoryComponent();
 
 	void ToggleInventoryMenu();
+
+	FInventoryItemChange OnItemAdded;
+	FInventoryItemChange OnItemRemoved;
+
 protected:
 	virtual void BeginPlay() override;
 
