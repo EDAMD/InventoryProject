@@ -8,8 +8,10 @@
 
 class UInv_InventoryBase;
 class UInv_InventoryItem;
+class UInv_ItemComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInventoryItemChange, UInv_InventoryItem*, Item);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNoRoomInInventory);
 
 /**
  * Inventory Management 负责创建并管理 InventoryMenu, 由PlayerController作为Owner
@@ -22,10 +24,16 @@ class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 public:	
 	UInv_InventoryComponent();
 
+	/* Delegate */
+	FInventoryItemChange OnItemAdded;				// 当背包中添加物品时
+	FInventoryItemChange OnItemRemoved;				// 当背包中丢去物品时
+	FNoRoomInInventory NoRoomInInventory;			// 当背包中没有足够空间时
+	/* End Delegates */
+
 	void ToggleInventoryMenu();
 
-	FInventoryItemChange OnItemAdded;
-	FInventoryItemChange OnItemRemoved;
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Inventory")
+	void TryAddItem(UInv_ItemComponent* ItemComponent);
 
 protected:
 	virtual void BeginPlay() override;
