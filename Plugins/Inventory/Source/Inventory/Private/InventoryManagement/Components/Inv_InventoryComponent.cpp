@@ -41,6 +41,28 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 	}
 
 	// TODO: Actually add the item to the inventory
+
+	if (Result.Item.IsValid() && Result.bStackable)
+	{
+		// 添加栈数量 在 Inventory 上的已有的类型
+		// 只添加栈的数量, 不创建新的类型
+		Server_AddStacksToItem(ItemComponent, Result.TotalRoomToFill, Result.Remainder);
+	}
+	else if (Result.TotalRoomToFill > 0)
+	{
+		// 这个 Item 在Inventory上不存在, 创建一个新的类型, 更新所有的
+		Server_AddNewItem(ItemComponent, Result.bStackable ? Result.TotalRoomToFill : 0);
+	}
+}
+
+void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
+{
+
+}
+
+void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder)
+{
+
 }
 
 void UInv_InventoryComponent::ConstructInventory()
