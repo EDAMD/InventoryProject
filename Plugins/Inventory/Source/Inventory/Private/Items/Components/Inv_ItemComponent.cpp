@@ -2,6 +2,7 @@
 
 
 #include "Items/Components/Inv_ItemComponent.h"
+#include "Net/UnrealNetWork.h"
 
 // Sets default values for this component's properties
 UInv_ItemComponent::UInv_ItemComponent()
@@ -12,4 +13,10 @@ UInv_ItemComponent::UInv_ItemComponent()
 
 }
 
+void UInv_ItemComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, ItemManifest);
+}
 

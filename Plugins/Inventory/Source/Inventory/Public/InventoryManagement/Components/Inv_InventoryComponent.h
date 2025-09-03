@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryManagement/FastArray/Inv_FastArray.h"
 #include "Inv_InventoryComponent.generated.h"
 
 class UInv_InventoryBase;
@@ -23,6 +24,7 @@ class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 
 public:	
 	UInv_InventoryComponent();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/* Delegate */
 	FInventoryItemChange OnItemAdded;				// 当背包中添加物品时
@@ -31,6 +33,7 @@ public:
 	/* End Delegates */
 
 	void ToggleInventoryMenu();
+	void AddRepSubObj(UObject* SubObj);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Inventory")
 	void TryAddItem(UInv_ItemComponent* ItemComponent);
@@ -47,6 +50,9 @@ protected:
 private:
 	void ConstructInventory();
 
+	UPROPERTY(Replicated)
+	FInv_InventoryFastArray InventoryList;
+
 	TWeakObjectPtr<APlayerController> OwningController;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
@@ -55,9 +61,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UInv_InventoryBase> InventoryMenu;
 
+
 	bool bInventoryMenuOpen;
-
 	void OpenInventoryMenu();
-
 	void CloseInventoryMenu();
 };

@@ -3,13 +3,24 @@
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
+#include "Net/UnrealNetWork.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
+	bInventoryMenuOpen = false;
+	SetIsReplicatedByDefault(true);
+	bReplicateUsingRegisteredSubObjectList = true;
 }
 
+
+void UInv_InventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, InventoryList);
+}
 
 void UInv_InventoryComponent::BeginPlay()
 {
@@ -28,6 +39,14 @@ void UInv_InventoryComponent::ToggleInventoryMenu()
 	else
 	{
 		OpenInventoryMenu();
+	}
+}
+
+void UInv_InventoryComponent::AddRepSubObj(UObject* SubObj)
+{
+	if (IsUsingRegisteredSubObjectList() && IsReadyForReplication() && IsValid(SubObj))
+	{
+		AddReplicatedSubObject(SubObj);
 	}
 }
 
@@ -57,6 +76,9 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 
 void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
 {
+	UInv_InventoryItem* NewItem = InventoryList.AddEntry(ItemComponent);
+
+	// TODO: Tell the Item Component to destroy it's ownering actor
 
 }
 

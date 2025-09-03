@@ -4,6 +4,7 @@
 #include "InventoryManagement/FastArray/Inv_FastArray.h"
 #include "Items/Inv_InventoryItem.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
+#include "Items/Components/Inv_ItemComponent.h"
 
 
 FInv_InventoryEntry::FInv_InventoryEntry()
@@ -11,7 +12,7 @@ FInv_InventoryEntry::FInv_InventoryEntry()
 
 }
 
-TArray<UInv_InventoryItem*> FInv_InventoryArray::GetAllItems() const
+TArray<UInv_InventoryItem*> FInv_InventoryFastArray::GetAllItems() const
 {
 	TArray<UInv_InventoryItem*> Results;
 	Results.Reserve(Entries.Num());
@@ -24,7 +25,7 @@ TArray<UInv_InventoryItem*> FInv_InventoryArray::GetAllItems() const
 	return Results;
 }
 
-void FInv_InventoryArray::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
+void FInv_InventoryFastArray::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
 {
 	UInv_InventoryComponent* IC = Cast<UInv_InventoryComponent>(OwnerComponent);
 	if (!IsValid(IC)) return;
@@ -35,7 +36,7 @@ void FInv_InventoryArray::PreReplicatedRemove(const TArrayView<int32> RemovedInd
 	}
 }
 
-void FInv_InventoryArray::PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize)
+void FInv_InventoryFastArray::PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize)
 {
 	UInv_InventoryComponent* IC = Cast<UInv_InventoryComponent>(OwnerComponent);
 	if (!IsValid(IC)) return;
@@ -46,14 +47,27 @@ void FInv_InventoryArray::PostReplicatedAdd(const TArrayView<int32> AddedIndices
 	}
 }
 
-UInv_InventoryItem* FInv_InventoryArray::AddItem(UInv_InventoryComponent* ItemComponent)
+UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_ItemComponent* ItemComponent)
 {
-	// TODO: Implement once ItemComponent is more complete.
+	// Implement once ItemComponent is more complete.
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+	if (!OwningActor->HasAuthority()) return nullptr;
+	UInv_InventoryComponent* IC = Cast<UInv_InventoryComponent>(OwnerComponent);
+	if (!IsValid(IC)) return nullptr;
 
-	return nullptr;
+	// 创建一个新的 Item 并复制 ItemComponent 中的 Manifest
+	// ItemComponent 是被收纳对象上的, 我们收纳之后会销毁它
+	FInv_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
+	NewEntry.Item = ItemComponent->GetItemManifest().Manifest(OwningActor);
+
+	IC->AddRepSubObj(NewEntry.Item);
+	MarkItemDirty(NewEntry);
+
+	return NewEntry.Item;
 }
 
-UInv_InventoryItem* FInv_InventoryArray::AddItem(UInv_InventoryItem* Item)
+UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_InventoryItem* Item)
 {
 	check(OwnerComponent);
 	AActor* OwningActor = OwnerComponent->GetOwner();
@@ -67,7 +81,7 @@ UInv_InventoryItem* FInv_InventoryArray::AddItem(UInv_InventoryItem* Item)
 	return Item;
 }
 
-void FInv_InventoryArray::RemoveItem(UInv_InventoryItem* Item)
+void FInv_InventoryFastArray::RemoveItem(UInv_InventoryItem* Item)
 {
 	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
 	{

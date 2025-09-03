@@ -8,7 +8,8 @@
 
 class UInv_InventoryItem;
 class UInv_InventoryComponent;
-struct FInv_InventoryArray;
+struct FInv_InventoryFastArray;
+class UInv_ItemComponent;
 
 /**
  * A single Entry in an Inventory
@@ -21,7 +22,7 @@ struct FInv_InventoryEntry : public FFastArraySerializerItem
 	FInv_InventoryEntry();
 
 private:
-	friend FInv_InventoryArray;
+	friend FInv_InventoryFastArray;
 	friend UInv_InventoryComponent;
 
 	UPROPERTY()
@@ -32,11 +33,11 @@ private:
  * List of inventory items 
  */
 USTRUCT(BlueprintType)
-struct FInv_InventoryArray : public FFastArraySerializer
+struct FInv_InventoryFastArray : public FFastArraySerializer
 {
 	GENERATED_BODY()
-	FInv_InventoryArray() : OwnerComponent(nullptr) {}
-	FInv_InventoryArray(UActorComponent* InOwner) : OwnerComponent(InOwner) {}
+	FInv_InventoryFastArray() : OwnerComponent(nullptr) {}
+	FInv_InventoryFastArray(UActorComponent* InOwner) : OwnerComponent(InOwner) {}
 
 	TArray<UInv_InventoryItem*> GetAllItems() const;
 
@@ -47,11 +48,11 @@ struct FInv_InventoryArray : public FFastArraySerializer
 
 	bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParms)
 	{
-		return FFastArraySerializer::FastArrayDeltaSerialize<FInv_InventoryEntry, FInv_InventoryArray>(Entries, DeltaParms, *this);
+		return FFastArraySerializer::FastArrayDeltaSerialize<FInv_InventoryEntry, FInv_InventoryFastArray>(Entries, DeltaParms, *this);
 	}
 
-	UInv_InventoryItem* AddItem(UInv_InventoryComponent* ItemComponent);
-	UInv_InventoryItem* AddItem(UInv_InventoryItem* Item);
+	UInv_InventoryItem* AddEntry(UInv_ItemComponent* ItemComponent);
+	UInv_InventoryItem* AddEntry(UInv_InventoryItem* Item);
 	void RemoveItem(UInv_InventoryItem* Item);
 
 private:
@@ -61,13 +62,12 @@ private:
 	UPROPERTY()
 	TArray<FInv_InventoryEntry> Entries;
 
-
 	UPROPERTY(NotReplicated)
 	TObjectPtr<UActorComponent> OwnerComponent;
 };
 
 template<>
-struct TStructOpsTypeTraits<FInv_InventoryArray> : public TStructOpsTypeTraitsBase2<FInv_InventoryArray>
+struct TStructOpsTypeTraits<FInv_InventoryFastArray> : public TStructOpsTypeTraitsBase2<FInv_InventoryFastArray>
 {
 	enum
 	{
