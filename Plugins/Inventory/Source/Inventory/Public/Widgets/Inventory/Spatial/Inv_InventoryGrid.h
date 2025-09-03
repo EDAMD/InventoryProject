@@ -9,6 +9,7 @@
 
 class UInv_GridSlot;
 class UCanvasPanel;
+class UInv_InventoryComponent;
 
 /**
  * 
@@ -19,13 +20,21 @@ class INVENTORY_API UInv_InventoryGrid : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	virtual void NativeOnInitialized() override;
+
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
 
-	virtual void NativeOnInitialized() override;
+	UFUNCTION()
+	void AddItem(UInv_InventoryItem* Item);
+
+	UFUNCTION()
+	void RemoveItem(UInv_InventoryItem* Item);
 	
 private:
 
 	void ConstructGrid();
+
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Inventory")
 	EInv_ItemCategory ItemCategory;
@@ -46,4 +55,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 TileSize;
+
+	bool MatchesCategory(const UInv_InventoryItem* Item);
 };
