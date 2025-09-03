@@ -33,6 +33,10 @@ public:
 	/* End Delegates */
 
 	void ToggleInventoryMenu();
+
+	/* Inventory Item */
+
+	// 告诉引擎：某个不是 Actor 的 UObject 也需要随着这个 Actor 一起进行网络复制（Replication）
 	void AddRepSubObj(UObject* SubObj);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category = "Inventory")
@@ -43,6 +47,8 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void Server_AddStacksToItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
+
+	/* End Inventory Item */
 
 protected:
 	virtual void BeginPlay() override;
@@ -55,14 +61,16 @@ private:
 
 	TWeakObjectPtr<APlayerController> OwningController;
 
+
+	/* Inventory Menu */
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	TSubclassOf<UInv_InventoryBase> InventoryMenuClass;
 
 	UPROPERTY()
 	TObjectPtr<UInv_InventoryBase> InventoryMenu;
 
-
 	bool bInventoryMenuOpen;
 	void OpenInventoryMenu();
 	void CloseInventoryMenu();
+	/* End Inventory Menu */
 };

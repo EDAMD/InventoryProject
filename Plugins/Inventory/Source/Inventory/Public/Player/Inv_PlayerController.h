@@ -31,7 +31,9 @@ private:
 	void CreateHUDWidget();
 	void TraceForItem();
 
+	/* Inventory */
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
+	/* End Inventory */
 
 	/* Input */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
@@ -50,8 +52,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UInv_HUDWidget> HUDWidget;
-	/* Viewport */
+	/* End Viewport */
 
+	/* Item Trace */
 	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
 	double TraceLength;
 
@@ -60,5 +63,6 @@ private:
 
 	TWeakObjectPtr<AActor> ThisActor;
 	TWeakObjectPtr<AActor> LastActor;
+	/* End Item Trace */
 
 };

@@ -57,7 +57,7 @@ UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_ItemComponent* ItemCo
 	if (!IsValid(IC)) return nullptr;
 
 	// 创建一个新的 Item 并复制 ItemComponent 中的 Manifest
-	// ItemComponent 是被收纳对象上的, 我们收纳之后会销毁它
+	// ItemComponent 是被收纳对象上的, 我们收纳之后会销毁这个对象, 因此我们需要创建一个 ItemComponent中 Item 的副本到 Entries 中
 	FInv_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.Item = ItemComponent->GetItemManifest().Manifest(OwningActor);
 
