@@ -9,6 +9,7 @@
 #include "Inv_ItemManifest.generated.h"
 
 class UInv_InventoryItem;
+struct FInv_ItemFragment;
 
 /**
  * item Manifest 包含所有需要的 数据(创建一个新的 InventoryItem 所需要的数据)
@@ -22,7 +23,10 @@ struct INVENTORY_API FInv_ItemManifest
 	UInv_InventoryItem* Manifest(UObject* Outer); 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
 	FGameplayTag GetItemType() const { return ItemType; }
-private:
+private:							
+	UPROPERTY(EditAnywhere, Category = "Inventory", meta = (ExcludeBaseStruct)) // ExcludeBaseStruct 防止添加基类
+	TArray<TInstancedStruct<FInv_ItemFragment>> Fragments;
+
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	EInv_ItemCategory ItemCategory{ EInv_ItemCategory::None };
