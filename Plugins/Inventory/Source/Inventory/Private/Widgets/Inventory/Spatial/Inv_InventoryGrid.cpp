@@ -10,6 +10,8 @@
 #include "InventoryManagement/Utils/Inv_InventoryStatics.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Inv_InventoryItem.h"
+#include "Items/Components/Inv_ItemComponent.h"
+#include "Items/Manifest/Inv_ItemManifest.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -22,11 +24,31 @@ void UInv_InventoryGrid::NativeOnInitialized()
 	InventoryComponent->OnItemRemoved.AddDynamic(this, &UInv_InventoryGrid::RemoveItem);
 }
 
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_ItemComponent* ItemComponent)
+{
+	return HasRoomForItem(ItemComponent->GetItemManifest());
+}
+
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_InventoryItem* Item)
+{
+	return HasRoomForItem(Item->GetItemManifest());
+}
+
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& ItemComponent)
+{
+	FInv_SlotAvailabilityResult Result;
+	Result.TotalRoomToFill = 1;
+	return Result;
+}
+
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 {
 	if (!MatchesCategory(Item)) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("InventoryGrid::AddItem"));
+	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
+
+	// TODO: Create a widget to show item icon and add it to the correct spot on the grid.
+	
 }
 
 void UInv_InventoryGrid::RemoveItem(UInv_InventoryItem* Item)

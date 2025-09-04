@@ -10,6 +10,8 @@
 class UInv_GridSlot;
 class UCanvasPanel;
 class UInv_InventoryComponent;
+class UInv_ItemComponent;
+struct FInv_ItemManifest;
 
 /**
  * 
@@ -23,6 +25,9 @@ public:
 	virtual void NativeOnInitialized() override;
 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
+
+	FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent);
+	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& ItemComponent);
 
 	UFUNCTION()
 	void AddItem(UInv_InventoryItem* Item);
@@ -57,4 +62,6 @@ private:
 	int32 TileSize;
 
 	bool MatchesCategory(const UInv_InventoryItem* Item);
+
+	FInv_SlotAvailabilityResult HasRoomForItem(UInv_InventoryItem* Item);
 };
