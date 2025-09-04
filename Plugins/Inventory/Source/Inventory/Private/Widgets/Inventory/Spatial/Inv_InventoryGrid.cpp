@@ -12,6 +12,8 @@
 #include "Items/Inv_InventoryItem.h"
 #include "Items/Components/Inv_ItemComponent.h"
 #include "Items/Manifest/Inv_ItemManifest.h"
+#include "Items/Fragments/Inv_ItemFragment.h"
+#include "Items/Fragments/Inv_FragmentTags.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -61,8 +63,13 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 {
 	// 获取 GridFragment, 我们就可以知道这个 物品 占用多少 Grid
 	// 获取 ImageFragment, 我们就可以 在网格中显示 Icom
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(Item, FragmentTags::GridFragment);
+	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(Item, FragmentTags::ImageFragment);
+	if (!GridFragment || !ImageFragment) return;
 
 	// 创建一个 Widget 添加到 Grid 中
+	 
+	
 	// 在容器中存储新创建的 Widget .
 }
 

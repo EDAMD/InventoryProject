@@ -18,7 +18,7 @@ struct FInv_ItemFragment
 	FInv_ItemFragment& operator=(FInv_ItemFragment&&) = default;			// 移动赋值运算符
 	virtual ~FInv_ItemFragment() {}											// 析构函数
 
-	FGameplayTag GetFragmentTag() { return FragmentTag; }
+	FGameplayTag GetFragmentTag() const { return FragmentTag; }
 	void SetFragmentTag(FGameplayTag Tag) { FragmentTag = Tag; }
 
 private:
