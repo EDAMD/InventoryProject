@@ -34,10 +34,16 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_InventoryIte
 	return HasRoomForItem(Item->GetItemManifest());
 }
 
-FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& ItemComponent)
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
 {
 	FInv_SlotAvailabilityResult Result;
 	Result.TotalRoomToFill = 1;
+
+	FInv_SlotAvailability SlotAvailability;
+	SlotAvailability.AmountToFill = 1;
+	SlotAvailability.Index = 0;
+
+	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability));
 	return Result;
 }
 
@@ -48,7 +54,16 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
 
 	// TODO: Create a widget to show item icon and add it to the correct spot on the grid.
-	
+	AddItemToIndices(Result, Item);
+}
+
+void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* Item)
+{
+	// 获取 GridFragment, 我们就可以知道这个 物品 占用多少 Grid
+	// 获取 ImageFragment, 我们就可以 在网格中显示 Icom
+
+	// 创建一个 Widget 添加到 Grid 中
+	// 在容器中存储新创建的 Widget .
 }
 
 void UInv_InventoryGrid::RemoveItem(UInv_InventoryItem* Item)

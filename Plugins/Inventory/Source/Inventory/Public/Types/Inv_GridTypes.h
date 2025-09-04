@@ -24,7 +24,7 @@ struct FInv_SlotAvailability
 
 	int32 Index{ INDEX_NONE };				// 物品被放入网格的索引
 	int32 AmountToFill{ 0 };				// 填充数量
-	bool bItemAtIndex{ false };				// 当前索引对应网格是否被占用
+	bool bItemAtIndex{ false };				// 当前物品是否存在于网格中, 并且含有 Index
 };
 
 USTRUCT(BlueprintType)
