@@ -27,7 +27,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory", meta = (ExcludeBaseStruct)) // ExcludeBaseStruct ∑¿÷πÃÌº”ª˘¿‡
 	TArray<TInstancedStruct<FInv_ItemFragment>> Fragments;
 
-
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	EInv_ItemCategory ItemCategory{ EInv_ItemCategory::None };
 

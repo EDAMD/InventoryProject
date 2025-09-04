@@ -4,6 +4,8 @@
 #include "GameplayTagContainer.h"
 #include "Inv_ItemFragment.generated.h"
 
+class UTexture2D;
+
 USTRUCT(BlueprintType)
 struct FInv_ItemFragment
 {
@@ -40,4 +42,19 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	float GridPadding{ 0.f };
+};
+
+USTRUCT(BlueprintType)
+struct FInv_ImageFragment : public FInv_ItemFragment
+{
+	GENERATED_BODY()
+
+	UTexture2D* GetIcon() { return Icon; }
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TObjectPtr<UTexture2D> Icon{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	FVector2D IconDimensions{44.f, 44.f};
 };
