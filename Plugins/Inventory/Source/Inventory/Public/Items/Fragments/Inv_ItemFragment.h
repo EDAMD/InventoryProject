@@ -31,9 +31,9 @@ struct FInv_GridFragment : public FInv_ItemFragment
 {
 	GENERATED_BODY()
 
-	FIntPoint GetGridSize() { return GridSize; }
+	FIntPoint GetGridSize() const { return GridSize; }
 	void SetGridSize(const FIntPoint& Size) { GridSize = Size; }
-	float GetGridPadding() { return GridPadding; }
+	float GetGridPadding() const { return GridPadding; }
 	void SetGridPadding(float Padding) { GridPadding = Padding; }
 
 private:
@@ -49,7 +49,8 @@ struct FInv_ImageFragment : public FInv_ItemFragment
 {
 	GENERATED_BODY()
 
-	UTexture2D* GetIcon() { return Icon; }
+public:
+	UTexture2D* GetIcon() const { return Icon; }
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
