@@ -33,9 +33,6 @@ public:
 
 	UFUNCTION()
 	void AddItem(UInv_InventoryItem* Item);
-
-	UFUNCTION()
-	void RemoveItem(UInv_InventoryItem* Item);
 	
 private:
 
@@ -57,6 +54,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	TSubclassOf<UInv_SlottedItem> SlottedItemClass;
 
+	UPROPERTY()
+	TMap<int32, TObjectPtr<UInv_SlottedItem>> SlottedItems;
+
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
 
@@ -73,5 +73,12 @@ private:
 	FVector2D GetDrawSize(const FInv_GridFragment* GridFragment) const;
 	void SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment) const;
 	void AddItemAtIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackable, const int32 StackAmount);
-	UInv_SlottedItem* CreateSlottedItem(UInv_InventoryItem* Item, const bool bStackable, const int32 StackAmount, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment, const int32 Index);
+	UInv_SlottedItem* CreateSlottedItem(
+		UInv_InventoryItem* Item, 
+		const bool bStackable, 
+		const int32 StackAmount, 
+		const FInv_GridFragment* GridFragment, 
+		const FInv_ImageFragment* ImageFragment, 
+		const int32 Index);
+	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem);
 };

@@ -25,7 +25,6 @@ void UInv_InventoryGrid::NativeOnInitialized()
 
 	InventoryComponent = UInv_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
 	InventoryComponent->OnItemAdded.AddDynamic(this, &UInv_InventoryGrid::AddItem);
-	InventoryComponent->OnItemRemoved.AddDynamic(this, &UInv_InventoryGrid::RemoveItem);
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_ItemComponent* ItemComponent)
@@ -82,8 +81,10 @@ void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* Item, const int32 In
 	UInv_SlottedItem* SlottedItem = CreateSlottedItem(Item, bStackable, StackAmount, GridFragment, ImageFragment, Index);
 
 	// 将 SlottedItem 添加到 Canvas Pannel 中
+	AddSlottedItemToCanvas(Index, GridFragment, SlottedItem);
 
 	// 在容器中存储新创建的 Widget .
+	SlottedItems.Add(Index, SlottedItem);
 }
 
 UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(
@@ -94,12 +95,21 @@ UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(
 	const FInv_ImageFragment* ImageFragment, 
 	const int32 Index)
 {
-	UInv_SlottedItem* SlottedItem = CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass);
+	UInv_SlottedItem* SlottedItem = CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass); 
 	SlottedItem->SetInventoryItem(Item);
 	SetSlottedItemImage(SlottedItem, GridFragment, ImageFragment);
 	SlottedItem->SetGridIndex(Index);
-
 	return SlottedItem;
+}
+
+void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem)
+{
+	CanvasPanel->AddChild(SlottedItem);
+	UCanvasPanelSlot* CanvasSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(SlottedItem);
+	CanvasSlot->SetSize(GetDrawSize(GridFragment));
+	const FVector2D DrawPos = UInv_WidgetUtils::GetPositionFromIndex(Index, Columns);
+	const FVector2D DrawPosWithPadding = DrawPos * GridFragment->GetGridPadding();
+	CanvasSlot->SetPosition(DrawPosWithPadding);
 }
 
 FVector2D UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const
@@ -116,11 +126,6 @@ void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem
 	FVector2D IconSize = GetDrawSize(GridFragment);
 	Brush.ImageSize = IconSize;
 	SlottedItem->SetImageBrush(Brush);
-}
-
-void UInv_InventoryGrid::RemoveItem(UInv_InventoryItem* Item)
-{
-
 }
 
 void UInv_InventoryGrid::ConstructGrid()
