@@ -72,7 +72,7 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 	{
 		AddItemAtIndex(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
 
-		UpdateGridSlot(Item, Availability.Index);
+		UpdateGridSlot(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
 	}
 
 }
@@ -124,12 +124,18 @@ void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 Index, const FInv_Gr
 	CanvasSlot->SetPosition(DrawPosWithPadding);
 }
 
-void UInv_InventoryGrid::UpdateGridSlot(UInv_InventoryItem* NewItem, const int32 Index)
+void UInv_InventoryGrid::UpdateGridSlot(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount)
 {
 	check(GridSlots.IsValidIndex(Index));
 
+	// 设置左上角的格子记录总数
+	if (bStackableItem)
+	{
+		GridSlots[Index]->SetStackCount(StackAmount);
+	}
+
 	const FInv_GridFragment* GridFramgent = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
-	if (!GridFramgent) return;
+	const FIntPoint Dimensions = GridFramgent ? GridFramgent->GetGridSize() : FIntPoint(1, 1);
 
 	/* 将背景格子(GridSlot) 根据物品尺寸风格对应的格子背景
 	for (int j = 0; j < GridFramgent->GetGridSize().Y; j++)
@@ -141,12 +147,13 @@ void UInv_InventoryGrid::UpdateGridSlot(UInv_InventoryItem* NewItem, const int32
 		}
 	}*/
 
-	const FIntPoint Dimensions = GridFramgent ? GridFramgent->GetGridSize() : FIntPoint(1, 1);
-
 	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns,
-		[](UInv_GridSlot* GridSlot)
+		[&](UInv_GridSlot* GridSlot)
 		{
+			GridSlot->SetInventoryItem(NewItem);
+			GridSlot->SetUpperLeftIndex(Index);
 			GridSlot->SetOccupiedTexture();
+			GridSlot->SetAvailable(false);
 		}
 	);
 }
