@@ -35,7 +35,7 @@ struct FInv_SlotAvailabilityResult
 	FInv_SlotAvailabilityResult() {}
 
 	TWeakObjectPtr<UInv_InventoryItem> Item;			// 物品信息
-	int32 TotalRoomToFill{ 0 };							// 需要占用格子数
+	int32 TotalRoomToFill{ 0 };							// 一个格子可存储数量
 	int32 Remainder{ 0 };								// 剩余数量
 	bool bStackable{ false };							// 是否可堆叠
 	TArray<FInv_SlotAvailability> SlotAvailabilities;	// 占用网格信息
