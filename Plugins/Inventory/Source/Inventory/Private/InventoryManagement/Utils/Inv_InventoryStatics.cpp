@@ -21,3 +21,4 @@ EInv_ItemCategory UInv_InventoryStatics::GetItemCategoryFromItemComp(UInv_ItemCo
 
 	return Comp->GetItemManifest().GetItemCategory();
 }
+
