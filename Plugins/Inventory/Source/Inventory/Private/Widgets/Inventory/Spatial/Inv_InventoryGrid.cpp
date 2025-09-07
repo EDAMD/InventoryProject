@@ -15,7 +15,7 @@
 #include "Items/Fragments/Inv_ItemFragment.h"
 #include "Items/Fragments/Inv_FragmentTags.h"
 #include "Widgets/SlottedItem/Inv_SlottedItem.h"
-#include "../../../../../../../../../../UE_5.5/Engine/Source/Runtime/SlateCore/Public/Styling/SlateBrush.h"
+#include "Styling/SlateBrush.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -40,19 +40,26 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_InventoryIte
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
 {
 	FInv_SlotAvailabilityResult Result;
-	Result.TotalRoomToFill = 7;
-	Result.bStackable = true;
-
-	FInv_SlotAvailability SlotAvailability;
-	SlotAvailability.AmountToFill = 2;
-	SlotAvailability.Index = 0;
-	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability));
-
-	FInv_SlotAvailability SlotAvailability2;
-	SlotAvailability2.AmountToFill = 5;
-	SlotAvailability2.Index = 1;
-	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability2));
-
+	
+	// 1. 确认Item是否是 Stackable
+	
+	// 2. 确认向栈中添加的数量
+	
+	// 3. 遍历每一个 GridSlot:
+		// 如果没有剩余需要填充的东西, 提前退出循环
+		// 判断这个 索引 所在的格子是否被占用
+		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
+		// 这个索引对应的格子是否有其他物品阻挡(如 在一个 3 x 3 的格子中, 中间出有其他物品占用了一个格子) (i.e. are there other item in the way?)
+		// 检查其他重要条件
+			// 检查 格子是否被占用
+			// 是否有可用的格子
+			// 这个可用的格子是否与我们想要添加的物品类型一直
+			// 如果一致, 判断是否是 Stackable item
+			// Is Stackable, 判断它是否达到最大容量
+		// 可以填充多少
+		// 更新格子剩余可填充数量
+		
+	// 4. 拾取物剩余数量
 	return Result;
 }
 
