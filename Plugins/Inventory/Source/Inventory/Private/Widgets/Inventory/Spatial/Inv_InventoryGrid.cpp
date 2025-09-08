@@ -59,10 +59,14 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		 
 		// 判断这个 索引 所在的格子是否被占用
 		if (IsIndexClaimed(CheckedIndices, GridSlot->GetIndex())) continue;
-
-		
 		 
 		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
+
+		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest)))
+		{
+			continue;
+		}
+
 		// 这个索引对应的格子是否有其他物品阻挡(如 在一个 3 x 3 的格子中, 中间出有其他物品占用了一个格子) (i.e. are there other item in the way?)
 		// 检查其他重要条件
 			// 检查 格子是否被占用
@@ -78,6 +82,26 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 
 	// 4. 拾取物剩余数量
 	return Result;
+}
+
+bool UInv_InventoryGrid::HasRoomAtIndex(UInv_GridSlot* GridSlot, FIntPoint Dimensions)
+{
+	bool bHasRoomAtIndex = true;
+
+	UInv_InventoryStatics::ForEach2D(GridSlots, GridSlot->GetIndex(), Dimensions, Columns,
+		[&]()
+		{
+
+		}
+	);
+
+	return bHasRoomAtIndex;
+}
+
+FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifest) const
+{
+	const FInv_GridFragment* GridFragment = Manifest.GetFragmentOfType<FInv_GridFragment>();
+	return GridFragment ? GridFragment->GetGridSize() : FIntPoint(1, 1);
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
