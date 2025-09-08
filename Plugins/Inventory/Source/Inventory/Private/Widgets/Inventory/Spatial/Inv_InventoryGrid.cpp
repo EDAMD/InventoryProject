@@ -94,7 +94,7 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 		[&](const UInv_GridSlot* SubGridSlot)
 		{
 			// 检查其他重要条件
-			if (CheckSlotConstraints(CheckedIndices, SubGridSlot, OutTentativelyClaimed))
+			if (CheckSlotConstraints(GridSlot, SubGridSlot, CheckedIndices, OutTentativelyClaimed))
 			{
 				OutTentativelyClaimed.Add(SubGridSlot->GetIndex());
 			}
@@ -109,8 +109,9 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 }
 
 bool UInv_InventoryGrid::CheckSlotConstraints(
+	const UInv_GridSlot* GridSlot,
+	const UInv_GridSlot* SubGridSlot,
 	const TSet<int>& CheckedIndices, 
-	const UInv_GridSlot* SubGridSlot, 
 	TSet<int32>& OutTentativelyClaimed) const
 {
 	// 检查 格子是否被占用
@@ -122,6 +123,9 @@ bool UInv_InventoryGrid::CheckSlotConstraints(
 		OutTentativelyClaimed.Add(SubGridSlot->GetIndex());
 		return true;
 	}
+
+	// 源网格是否是子网格的中心网格(UpperLeftSlot)
+	if (!IsUpperLeftSlot(GridSlot, SubGridSlot)) return false;
 
 	// 这个可用的格子是否与我们想要添加的物品类型一直
 	
@@ -140,6 +144,11 @@ FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifes
 bool UInv_InventoryGrid::HasValidItem(const UInv_GridSlot* GridSlot) const
 {
 	return GridSlot->GetInventoryItem().IsValid();
+}
+
+bool UInv_InventoryGrid::IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot) const
+{
+	return SubGridSlot->GetUpperLeftIndex() == GridSlot->GetIndex();
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)

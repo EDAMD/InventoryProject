@@ -84,9 +84,10 @@ private:
 	void UpdateGridSlot(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount);
 	bool IsIndexClaimed(const TSet<int>& CheckedIndices, const int32 Index) const;
 	bool HasRoomAtIndex(UInv_GridSlot* GridSlot, FIntPoint Dimensions, const TSet<int32>& CheckedIndices, TSet<int32>& OutTentativelyClaimed);
-	bool CheckSlotConstraints(const TSet<int>& CheckedIndices, const UInv_GridSlot* SubGridSlot, TSet<int32>& OutTentativelyClaimed) const;
+	bool CheckSlotConstraints(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot, const TSet<int>& CheckedIndices, TSet<int32>& OutTentativelyClaimed) const;
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
 	bool HasValidItem(const UInv_GridSlot* GridSlot) const;
+	bool IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot) const;
 
 
 };
