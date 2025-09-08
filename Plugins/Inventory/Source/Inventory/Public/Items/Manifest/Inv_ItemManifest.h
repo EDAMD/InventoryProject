@@ -60,9 +60,9 @@ const T* FInv_ItemManifest::GetFragmentOfTypeWithTag(const FGameplayTag& Fragmen
 template<typename T> requires std::derived_from<T, FInv_ItemFragment>
 const T* FInv_ItemManifest::GetFragmentOfType() const
 {
-	for (const TInstancedStruct<FInv_ItemFragment>& Fragment : Fagments)
+	for (const TInstancedStruct<FInv_ItemFragment>& Fragment : Fragments)
 	{
-		if (const T* FragmentPtr = Frament.GetPtr<T>())
+		if (const T* FragmentPtr = Fragment.GetPtr<T>())
 		{
 			return FragmentPtr;
 		}

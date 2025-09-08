@@ -65,8 +65,8 @@ struct FInv_StackableFragment : public FInv_ItemFragment
 {
 	GENERATED_BODY()
 	
-	int32 GetMaxStackSize() { return MaxStackSize; }
-	int32 GetStackCount() { return StackCount; }
+	int32 GetMaxStackSize() const { return MaxStackSize; }
+	int32 GetStackCount() const { return StackCount; }
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")

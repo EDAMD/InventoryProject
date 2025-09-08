@@ -46,6 +46,9 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	Result.bStackable = StackableFragment != nullptr;
 
 	// 2. 确认向栈中添加的数量
+	const int32 MaxStackSize = Result.bStackable ? StackableFragment->GetMaxStackSize() : 1;
+	int32 AmountToFill = Result.bStackable ? StackableFragment->GetStackCount() : 1;
+
 	
 	// 3. 遍历每一个 GridSlot:
 		// 如果没有剩余需要填充的东西, 提前退出循环
@@ -81,6 +84,7 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 	{
 		AddItemAtIndex(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
 
+		// 更改背景格子信息
 		UpdateGridSlot(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
 	}
 
@@ -159,10 +163,10 @@ void UInv_InventoryGrid::UpdateGridSlot(UInv_InventoryItem* NewItem, const int32
 	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns,
 		[&](UInv_GridSlot* GridSlot)
 		{
-			GridSlot->SetInventoryItem(NewItem);
-			GridSlot->SetUpperLeftIndex(Index);
-			GridSlot->SetOccupiedTexture();
-			GridSlot->SetAvailable(false);
+			GridSlot->SetInventoryItem(NewItem);	// 设置拥有物品
+			GridSlot->SetUpperLeftIndex(Index);		// 设置中心格子
+			GridSlot->SetOccupiedTexture();			// 设置格子背景
+			GridSlot->SetAvailable(false);			// 设置格子状态
 		}
 	);
 }
