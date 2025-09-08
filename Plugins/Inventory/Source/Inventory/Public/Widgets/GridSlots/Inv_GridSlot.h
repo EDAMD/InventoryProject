@@ -32,16 +32,16 @@ public:
 
 	EInv_GridSlotState GetGridSlotState() const { return GridSlotState; }
 
-	TWeakObjectPtr<UInv_InventoryItem> GetInventoryItem() { return InventoryItem; }
+	TWeakObjectPtr<UInv_InventoryItem> GetInventoryItem() const { return InventoryItem; }
 	void SetInventoryItem(UInv_InventoryItem* Item);
 
-	int32 GetUpperLeftIndex() { return UpperLeftIndex; }
+	int32 GetUpperLeftIndex() const { return UpperLeftIndex; }
 	void SetUpperLeftIndex(int32 Index) { UpperLeftIndex = Index; }
 
-	int32 GetStackCount() { return StackCount; }
+	int32 GetStackCount() const { return StackCount; }
 	void SetStackCount(int32 Count) { StackCount = Count; }
 
-	bool IsAvailable() { return bAvailable; }
+	bool IsAvailable() const { return bAvailable; }
 	void SetAvailable(bool bIsAvailable) { bAvailable = bIsAvailable; }
 
 	void SetUnoccupiedTexture();

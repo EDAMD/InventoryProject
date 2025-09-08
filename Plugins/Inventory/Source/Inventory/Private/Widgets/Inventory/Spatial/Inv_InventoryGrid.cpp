@@ -93,7 +93,8 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 	UInv_InventoryStatics::ForEach2D(GridSlots, GridSlot->GetIndex(), Dimensions, Columns,
 		[&](const UInv_GridSlot* SubGridSlot)
 		{
-			if (CheckSlotConstraints(GridSlot))
+			// 检查其他重要条件
+			if (CheckSlotConstraints(CheckedIndices, SubGridSlot, OutTentativelyClaimed))
 			{
 				OutTentativelyClaimed.Add(SubGridSlot->GetIndex());
 			}
@@ -107,14 +108,26 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 	return bHasRoomAtIndex;
 }
 
-bool UInv_InventoryGrid::CheckSlotConstraints(UInv_GridSlot* GridSlot) const
+bool UInv_InventoryGrid::CheckSlotConstraints(
+	const TSet<int>& CheckedIndices, 
+	const UInv_GridSlot* SubGridSlot, 
+	TSet<int32>& OutTentativelyClaimed) const
 {
-	// 检查其他重要条件
-		// 检查 格子是否被占用
-		// 是否有可用的格子
-		// 这个可用的格子是否与我们想要添加的物品类型一直
-		// 如果一致, 判断是否是 Stackable item
-		// Is Stackable, 判断它是否达到最大容量
+	// 检查 格子是否被占用
+	if (IsIndexClaimed(CheckedIndices, SubGridSlot->GetIndex())) return false;
+
+	// 这个网格是否有有效的 Item 没有则该网格是空的
+	if (!HasValidItem(SubGridSlot))
+	{
+		OutTentativelyClaimed.Add(SubGridSlot->GetIndex());
+		return true;
+	}
+
+	// 这个可用的格子是否与我们想要添加的物品类型一直
+	
+	// 如果一致, 判断是否是 Stackable item
+	
+	// Is Stackable, 判断它是否达到最大容量
 	return false;
 }
 
@@ -122,6 +135,11 @@ FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifes
 {
 	const FInv_GridFragment* GridFragment = Manifest.GetFragmentOfType<FInv_GridFragment>();
 	return GridFragment ? GridFragment->GetGridSize() : FIntPoint(1, 1);
+}
+
+bool UInv_InventoryGrid::HasValidItem(const UInv_GridSlot* GridSlot) const
+{
+	return GridSlot->GetInventoryItem().IsValid();
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
