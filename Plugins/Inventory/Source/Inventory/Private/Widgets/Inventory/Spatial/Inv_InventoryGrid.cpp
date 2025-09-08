@@ -20,7 +20,7 @@
 void UInv_InventoryGrid::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-	
+
 	ConstructGrid();
 
 	InventoryComponent = UInv_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
@@ -40,7 +40,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_Invent
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
 {
 	FInv_SlotAvailabilityResult Result;
-	
+
 	// 1. 确认Item是否是 Stackable
 	const FInv_StackableFragment* StackableFragment = Manifest.GetFragmentOfType<FInv_StackableFragment>();
 	Result.bStackable = StackableFragment != nullptr;
@@ -49,9 +49,12 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	const int32 MaxStackSize = Result.bStackable ? StackableFragment->GetMaxStackSize() : 1;
 	int32 AmountToFill = Result.bStackable ? StackableFragment->GetStackCount() : 1;
 
-	
 	// 3. 遍历每一个 GridSlot:
+	for (const TObjectPtr<UInv_GridSlot>& GridSlot : GridSlots)
+	{
 		// 如果没有剩余需要填充的东西, 提前退出循环
+		if (AmountToFill == 0) break;
+		 
 		// 判断这个 索引 所在的格子是否被占用
 		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
 		// 这个索引对应的格子是否有其他物品阻挡(如 在一个 3 x 3 的格子中, 中间出有其他物品占用了一个格子) (i.e. are there other item in the way?)
@@ -63,7 +66,10 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 			// Is Stackable, 判断它是否达到最大容量
 		// 可以填充多少
 		// 更新格子剩余可填充数量
-		
+
+	}
+
+
 	// 4. 拾取物剩余数量
 	return Result;
 }
@@ -109,14 +115,14 @@ void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* Item, const int32 In
 }
 
 UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(
-	UInv_InventoryItem* Item, 
-	const bool bStackable, 
-	const int32 StackAmount, 
-	const FInv_GridFragment* GridFragment, 
-	const FInv_ImageFragment* ImageFragment, 
+	UInv_InventoryItem* Item,
+	const bool bStackable,
+	const int32 StackAmount,
+	const FInv_GridFragment* GridFragment,
+	const FInv_ImageFragment* ImageFragment,
 	const int32 Index)
 {
-	UInv_SlottedItem* SlottedItem = CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass); 
+	UInv_SlottedItem* SlottedItem = CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass);
 	SlottedItem->SetInventoryItem(Item);
 	SetSlottedItemImage(SlottedItem, GridFragment, ImageFragment);
 	SlottedItem->SetGridIndex(Index);
