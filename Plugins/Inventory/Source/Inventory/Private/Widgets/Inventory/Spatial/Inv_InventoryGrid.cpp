@@ -32,7 +32,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_ItemComponen
 	return HasRoomForItem(ItemComponent->GetItemManifest());
 }
 
-FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_InventoryItem* Item)
+FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_InventoryItem* Item)
 {
 	return HasRoomForItem(Item->GetItemManifest());
 }
@@ -42,7 +42,9 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	FInv_SlotAvailabilityResult Result;
 	
 	// 1. 确认Item是否是 Stackable
-	
+	const FInv_StackableFragment* StackableFragment = Manifest.GetFragmentOfType<FInv_StackableFragment>();
+	Result.bStackable = StackableFragment != nullptr;
+
 	// 2. 确认向栈中添加的数量
 	
 	// 3. 遍历每一个 GridSlot:
