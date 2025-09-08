@@ -117,19 +117,22 @@ bool UInv_InventoryGrid::CheckSlotConstraints(
 	// 检查 格子是否被占用
 	if (IsIndexClaimed(CheckedIndices, SubGridSlot->GetIndex())) return false;
 
-	// 这个网格是否有有效的 Item 没有则该网格是空的
+	// 这个网格是否有效的 Item 没有则该网格是空的
 	if (!HasValidItem(SubGridSlot))
 	{
 		OutTentativelyClaimed.Add(SubGridSlot->GetIndex());
 		return true;
 	}
 
-	// 源网格是否是子网格的中心网格(UpperLeftSlot)
+	// 源网格是否是子网格的中心网格(UpperLeftSlot) --- 该物品是可堆叠物品, 我们需要判断 源网格 是否是其他有 效格子网格 的中心网格
 	if (!IsUpperLeftSlot(GridSlot, SubGridSlot)) return false;
 
-	// 这个可用的格子是否与我们想要添加的物品类型一直
-	
-	// 如果一致, 判断是否是 Stackable item
+	// 判断是否是 Stackable item
+	const UInv_InventoryItem* Item = SubGridSlot->GetInventoryItem().Get();
+	if (!Item->IsStackable()) return false;
+
+	// 这个可用的格子是否与我们想要添加的物品类型一致
+
 	
 	// Is Stackable, 判断它是否达到最大容量
 	return false;
