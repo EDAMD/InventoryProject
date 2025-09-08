@@ -82,4 +82,5 @@ private:
 		const int32 Index);
 	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem);
 	void UpdateGridSlot(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount);
+	bool IsIndexClaimed(const TSet<int>& CheckedIndices, const int32 Index) const;
 };

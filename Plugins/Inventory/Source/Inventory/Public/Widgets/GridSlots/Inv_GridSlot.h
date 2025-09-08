@@ -26,6 +26,10 @@ class INVENTORY_API UInv_GridSlot : public UUserWidget
 public:
 	int32 GetTileIndex() const { return TileIndex; }
 	void SetTileIndex(int32 Index) { TileIndex = Index; }
+
+	int32 GetIndex() const { return TileIndex; }
+	void SetIndex(int32 Index) { TileIndex = Index; }
+
 	EInv_GridSlotState GetGridSlotState() const { return GridSlotState; }
 
 	TWeakObjectPtr<UInv_InventoryItem> GetInventoryItem() { return InventoryItem; }

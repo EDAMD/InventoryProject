@@ -49,6 +49,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	const int32 MaxStackSize = Result.bStackable ? StackableFragment->GetMaxStackSize() : 1;
 	int32 AmountToFill = Result.bStackable ? StackableFragment->GetStackCount() : 1;
 
+	TSet<int> CheckedIndices;	// 已经被检查过的元素下标
+
 	// 3. 遍历每一个 GridSlot:
 	for (const TObjectPtr<UInv_GridSlot>& GridSlot : GridSlots)
 	{
@@ -56,6 +58,10 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		if (AmountToFill == 0) break;
 		 
 		// 判断这个 索引 所在的格子是否被占用
+		if (IsIndexClaimed(CheckedIndices, GridSlot->GetIndex())) continue;
+
+		
+		 
 		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
 		// 这个索引对应的格子是否有其他物品阻挡(如 在一个 3 x 3 的格子中, 中间出有其他物品占用了一个格子) (i.e. are there other item in the way?)
 		// 检查其他重要条件
@@ -175,6 +181,11 @@ void UInv_InventoryGrid::UpdateGridSlot(UInv_InventoryItem* NewItem, const int32
 			GridSlot->SetAvailable(false);			// 设置格子状态
 		}
 	);
+}
+
+bool UInv_InventoryGrid::IsIndexClaimed(const TSet<int>& CheckedIndices, const int32 Index) const
+{
+	return CheckedIndices.Contains(Index);
 }
 
 FVector2D UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const
