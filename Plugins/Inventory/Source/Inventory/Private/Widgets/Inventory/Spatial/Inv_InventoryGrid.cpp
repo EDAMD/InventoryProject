@@ -16,7 +16,7 @@
 #include "Items/Fragments/Inv_FragmentTags.h"
 #include "Widgets/SlottedItem/Inv_SlottedItem.h"
 #include "Styling/SlateBrush.h"
-#include "../../../../../../../Source/Runtime/GameplayTags/Classes/GameplayTagContainer.h"
+#include "GameplayTagContainer.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -26,6 +26,28 @@ void UInv_InventoryGrid::NativeOnInitialized()
 
 	InventoryComponent = UInv_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
 	InventoryComponent->OnItemAdded.AddDynamic(this, &UInv_InventoryGrid::AddItem);
+}
+
+void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
+{
+	if (!MatchesCategory(Item)) return;
+
+	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
+
+	// TODO: Create a widget to show item icon and add it to the correct spot on the grid.
+	AddItemToIndices(Result, Item);
+}
+
+void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* Item)
+{
+	for (const auto& Availability : Result.SlotAvailabilities)
+	{
+		AddItemAtIndex(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
+
+		// 更改背景格子信息
+		UpdateGridSlot(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
+	}
+
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(UInv_ItemComponent* ItemComponent)
@@ -189,7 +211,7 @@ bool UInv_InventoryGrid::IsInGridBounds(const int32 StartIndex, const FIntPoint&
 	if (StartIndex < 0 || StartIndex >= GridSlots.Num()) return false;
 
 	int32 EndColumn = (StartIndex % Columns) + ItemDimensions.X;
-	int32 EndRow = (StartIndex / Rows) + ItemDimensions.Y;
+	int32 EndRow = (StartIndex / Columns) + ItemDimensions.Y;
 
 	return EndRow <= Rows && EndColumn <= Columns;
 }
@@ -216,27 +238,6 @@ int32 UInv_InventoryGrid::GetStackAmount(const UInv_GridSlot* GridSlot) const
 	return CurrentSlotStackCount;
 }
 
-void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
-{
-	if (!MatchesCategory(Item)) return;
-
-	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
-
-	// TODO: Create a widget to show item icon and add it to the correct spot on the grid.
-	AddItemToIndices(Result, Item);
-}
-
-void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* Item)
-{
-	for (const auto& Availability : Result.SlotAvailabilities)
-	{
-		AddItemAtIndex(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
-
-		// 更改背景格子信息
-		UpdateGridSlot(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
-	}
-
-}
 
 void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackable, const int32 StackAmount)
 {

@@ -51,7 +51,7 @@ public:
 
 private:
 	int32 TileIndex;
-	int32 StackCount;
+	int32 StackCount; // 该格子中物品的数量(仅对可堆叠物品有效)
 	int32 UpperLeftIndex{ INDEX_NONE };
 	TWeakObjectPtr<UInv_InventoryItem> InventoryItem;
 	bool bAvailable;
