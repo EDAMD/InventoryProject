@@ -60,6 +60,9 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		 
 		// 判断这个 索引 所在的格子是否被占用
 		if (IsIndexClaimed(CheckedIndices, GridSlot->GetIndex())) continue;
+
+		// 检查这个物品是否超出背包格子的边界(如, 2x3的斗篷, 只能在 1, 2行放置, 第二行以后就超出边界了)
+		if (!IsInGridBounds(GridSlot->GetIndex(), GetItemDimensions(Manifest))) continue;
 		 
 		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
 		TSet<int32> TentativelyClaimed;
@@ -73,6 +76,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 
 		
 		// 可以填充多少
+		
+
 		// 更新格子剩余可填充数量
 
 	}
@@ -164,6 +169,16 @@ bool UInv_InventoryGrid::IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UI
 bool UInv_InventoryGrid::DoesItemTypeMatch(const UInv_InventoryItem* Item, const FGameplayTag& ItemType) const
 {
 	return Item->GetItemManifest().GetItemType() == ItemType;
+}
+
+bool UInv_InventoryGrid::IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const
+{
+	if (StartIndex < 0 || StartIndex >= GridSlots.Num()) return false;
+
+	int32 EndColumn = (StartIndex % Columns) + ItemDimensions.X;
+	int32 EndRow = (StartIndex / Rows) + ItemDimensions.Y;
+
+	return EndRow <= Rows && EndColumn <= Columns;
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
