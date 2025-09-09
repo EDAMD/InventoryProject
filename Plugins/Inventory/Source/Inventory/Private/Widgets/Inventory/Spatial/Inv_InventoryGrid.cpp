@@ -16,6 +16,7 @@
 #include "Items/Fragments/Inv_FragmentTags.h"
 #include "Widgets/SlottedItem/Inv_SlottedItem.h"
 #include "Styling/SlateBrush.h"
+#include "../../../../../../../Source/Runtime/GameplayTags/Classes/GameplayTagContainer.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -62,7 +63,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		 
 		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
 		TSet<int32> TentativelyClaimed;
-		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimed))
+		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimed, Manifest.GetItemType()))
 		{
 			continue;
 		}
@@ -85,7 +86,8 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 	UInv_GridSlot* GridSlot, 
 	FIntPoint Dimensions, 
 	const TSet<int32>& CheckedIndices, 
-	TSet<int32>& OutTentativelyClaimed)
+	TSet<int32>& OutTentativelyClaimed,
+	const FGameplayTag& ItemType)
 {
 	// 这个索引对应的格子是否有其他物品阻挡(如 在一个 3 x 3 的格子中, 中间出有其他物品占用了一个格子) (i.e. are there other item in the way?)
 	bool bHasRoomAtIndex = true;
@@ -94,7 +96,7 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 		[&](const UInv_GridSlot* SubGridSlot)
 		{
 			// 检查其他重要条件
-			if (CheckSlotConstraints(GridSlot, SubGridSlot, CheckedIndices, OutTentativelyClaimed))
+			if (CheckSlotConstraints(GridSlot, SubGridSlot, CheckedIndices, OutTentativelyClaimed, ItemType))
 			{
 				OutTentativelyClaimed.Add(SubGridSlot->GetIndex());
 			}
@@ -112,7 +114,8 @@ bool UInv_InventoryGrid::CheckSlotConstraints(
 	const UInv_GridSlot* GridSlot,
 	const UInv_GridSlot* SubGridSlot,
 	const TSet<int>& CheckedIndices, 
-	TSet<int32>& OutTentativelyClaimed) const
+	TSet<int32>& OutTentativelyClaimed, 
+	const FGameplayTag& ItemType) const
 {
 	// 检查 格子是否被占用
 	if (IsIndexClaimed(CheckedIndices, SubGridSlot->GetIndex())) return false;
@@ -132,9 +135,11 @@ bool UInv_InventoryGrid::CheckSlotConstraints(
 	if (!Item->IsStackable()) return false;
 
 	// 这个可用的格子是否与我们想要添加的物品类型一致
+	if (!DoesItemTypeMatch(Item, ItemType)) return false;
 
-	
 	// Is Stackable, 判断它是否达到最大容量
+
+
 	return false;
 }
 
@@ -152,6 +157,11 @@ bool UInv_InventoryGrid::HasValidItem(const UInv_GridSlot* GridSlot) const
 bool UInv_InventoryGrid::IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot) const
 {
 	return SubGridSlot->GetUpperLeftIndex() == GridSlot->GetIndex();
+}
+
+bool UInv_InventoryGrid::DoesItemTypeMatch(const UInv_InventoryItem* Item, const FGameplayTag& ItemType) const
+{
+	return Item->GetItemManifest().GetItemType() == ItemType;
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
