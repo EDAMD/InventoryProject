@@ -70,7 +70,7 @@ struct FInv_StackableFragment : public FInv_ItemFragment
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
-	int32 MaxStackSize{1};		// 栈存放最大值 (一个格子可存放数量)
+	int32 MaxStackSize{1};		// 最大堆叠数 (一个格子可存放数量)
 	
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 StackCount{1};		// 捡起时获得数量

@@ -57,13 +57,13 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	{
 		// 如果没有剩余需要填充的东西, 提前退出循环
 		if (AmountToFill == 0) break;
-		 
+
 		// 判断这个 索引 所在的格子是否被占用
 		if (IsIndexClaimed(CheckedIndices, GridSlot->GetIndex())) continue;
 
 		// 检查这个物品是否超出背包格子的边界(如, 2x3的斗篷, 只能在 1, 2行放置, 第二行以后就超出边界了)
 		if (!IsInGridBounds(GridSlot->GetIndex(), GetItemDimensions(Manifest))) continue;
-		 
+
 		// 判断这个格子是否完全放得下(如, 3 x 2 的格子不能放下 3 x 3 的物品) (i.e. Is it out of grid bounds?)
 		TSet<int32> TentativelyClaimed;
 		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimed, Manifest.GetItemType(), MaxStackSize))
@@ -71,27 +71,39 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 			continue;
 		}
 
-		// 当(HasRoomAtIndex -> true 时, 将暂存的被检查的网格添加到 CheckedIndices 中)
-		CheckedIndices.Append(TentativelyClaimed);
-
-		
 		// 可以填充多少
 		const int32 AmountToFillInSlot = DetermineFillAmountForSlot(Result.bStackable, MaxStackSize, AmountToFill, GridSlot);
 		if (AmountToFillInSlot == 0) continue;
 
-		// 更新格子剩余可填充数量
+		// 当(HasRoomAtIndex -> true 时, 将暂存的被检查的网格添加到 CheckedIndices 中)
+		CheckedIndices.Append(TentativelyClaimed);
 
+		// 更新格子剩余可填充数量
+		Result.TotalRoomToFill += AmountToFillInSlot;
+		Result.SlotAvailabilities.Emplace(
+			FInv_SlotAvailability{
+			HasValidItem(GridSlot) ? GridSlot->GetUpperLeftIndex() : GridSlot->GetIndex(),
+			Result.bStackable ? AmountToFillInSlot : 0,
+			HasValidItem(GridSlot)
+			}
+		);
+
+		AmountToFill -= AmountToFillInSlot;
+
+		// 4. 拾取物剩余数量
+		Result.Remainder = AmountToFill;
+
+		if (AmountToFill == 0) break;
 	}
 
 
-	// 4. 拾取物剩余数量
 	return Result;
 }
 
 bool UInv_InventoryGrid::HasRoomAtIndex(
-	UInv_GridSlot* GridSlot, 
-	FIntPoint Dimensions, 
-	const TSet<int32>& CheckedIndices, 
+	UInv_GridSlot* GridSlot,
+	FIntPoint Dimensions,
+	const TSet<int32>& CheckedIndices,
 	TSet<int32>& OutTentativelyClaimed,
 	const FGameplayTag& ItemType,
 	const int32 MaxStackSize)
@@ -120,8 +132,8 @@ bool UInv_InventoryGrid::HasRoomAtIndex(
 bool UInv_InventoryGrid::CheckSlotConstraints(
 	const UInv_GridSlot* GridSlot,
 	const UInv_GridSlot* SubGridSlot,
-	const TSet<int>& CheckedIndices, 
-	TSet<int32>& OutTentativelyClaimed, 
+	const TSet<int>& CheckedIndices,
+	TSet<int32>& OutTentativelyClaimed,
 	const FGameplayTag& ItemType,
 	const int32 MaxStackSize) const
 {
