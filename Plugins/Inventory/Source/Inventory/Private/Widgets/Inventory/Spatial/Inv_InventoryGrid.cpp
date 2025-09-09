@@ -47,8 +47,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 	Result.bStackable = StackableFragment != nullptr;
 
 	// 2. 确认向栈中添加的数量
-	const int32 MaxStackSize = Result.bStackable ? StackableFragment->GetMaxStackSize() : 1;
-	int32 AmountToFill = Result.bStackable ? StackableFragment->GetStackCount() : 1;
+	const int32 MaxStackSize = Result.bStackable ? StackableFragment->GetMaxStackSize() : 1; // 该物品最大堆叠数量
+	int32 AmountToFill = Result.bStackable ? StackableFragment->GetStackCount() : 1;		 // 该物品堆叠总数量
 
 	TSet<int32> CheckedIndices;	// 已经被检查过的元素下标
 
@@ -76,7 +76,8 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 
 		
 		// 可以填充多少
-		
+		const int32 AmountToFillInSlot = DetermineFillAmountForSlot(Result.bStackable, MaxStackSize, AmountToFill, GridSlot);
+		if (AmountToFillInSlot == 0) continue;
 
 		// 更新格子剩余可填充数量
 
@@ -179,6 +180,28 @@ bool UInv_InventoryGrid::IsInGridBounds(const int32 StartIndex, const FIntPoint&
 	int32 EndRow = (StartIndex / Rows) + ItemDimensions.Y;
 
 	return EndRow <= Rows && EndColumn <= Columns;
+}
+
+int32 UInv_InventoryGrid::DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const
+{
+	// 计算格子剩余容量
+	int32 RoomInSlot = MaxStackSize - GetStackAmount(GridSlot);
+
+	// 如果是可堆叠物品, 需要 AmountToFill 和 格子剩余容量的最小值
+	return bStackable ? FMath::Min(RoomInSlot, AmountToFill) : 1;
+}
+
+int32 UInv_InventoryGrid::GetStackAmount(const UInv_GridSlot* GridSlot) const
+{
+	int32 CurrentSlotStackCount = GridSlot->GetStackCount();
+
+	// 如果这个格子没有StackCount, 那么我们就需要获取他的中心格子的 StackCount
+	if (const int32 UpperLeftIndex = GridSlot->GetUpperLeftIndex(); UpperLeftIndex != INDEX_NONE)
+	{
+		UInv_GridSlot* UpperLeftSlot = GridSlots[UpperLeftIndex];
+		CurrentSlotStackCount = UpperLeftSlot->GetStackCount();
+	}
+	return CurrentSlotStackCount;
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
