@@ -5,6 +5,7 @@
 #include "Items/Inv_InventoryItem.h"
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Components/Inv_ItemComponent.h"
+#include "../../../../../../../Source/Runtime/GameplayTags/Classes/GameplayTagContainer.h"
 
 
 FInv_InventoryEntry::FInv_InventoryEntry()
@@ -92,5 +93,16 @@ void FInv_InventoryFastArray::RemoveItem(UInv_InventoryItem* Item)
 			MarkItemDirty(Entry);
 		}
 	}
+}
+
+UInv_InventoryItem* FInv_InventoryFastArray::FindFirstItemByType(const FGameplayTag& ItemType) const
+{
+	auto* FoundItem = Entries.FindByPredicate(
+		[ItemType = ItemType](const FInv_InventoryEntry& Entry)
+		{
+			return IsValid(Entry.Item) && Entry.Item->GetItemManifest().GetItemType().MatchesTagExact(ItemType);
+		});
+
+	return FoundItem ? FoundItem->Item : nullptr;
 }
 

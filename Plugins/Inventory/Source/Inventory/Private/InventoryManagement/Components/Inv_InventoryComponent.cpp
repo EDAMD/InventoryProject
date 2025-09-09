@@ -4,6 +4,8 @@
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Net/UnrealNetWork.h"
+#include "Items/Components/Inv_ItemComponent.h"
+#include "Items/Inv_InventoryItem.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
@@ -59,7 +61,10 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 		NoRoomInInventory.Broadcast();
 	}
 
-	// TODO: Actually add the item to the inventory
+	UInv_InventoryItem* FoundItem = InventoryList.FindFirstItemByType(ItemComponent->GetItemManifest().GetItemType());
+	Result.Item = FoundItem;
+
+	// Actually add the item to the inventory
 
 	if (Result.Item.IsValid() && Result.bStackable)
 	{
