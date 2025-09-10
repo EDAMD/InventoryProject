@@ -16,6 +16,7 @@ class UInv_SlottedItem;
 struct FInv_GridFragment;
 struct FInv_ImageFragment;
 struct FGameplayTag;
+class UInv_HoverItem;
 
 /**
  * 
@@ -59,6 +60,12 @@ private:
 	TMap<int32, TObjectPtr<UInv_SlottedItem>> SlottedItems;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_HoverItem> HoverItemClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_HoverItem> HoverItem;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
@@ -72,6 +79,8 @@ private:
 
 	UFUNCTION()
 	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
+	bool IsRightClicked(const FPointerEvent& MouseEvent) const;
+	bool IsLeftClicked(const FPointerEvent& MouseEvent) const;
 
 	bool MatchesCategory(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);

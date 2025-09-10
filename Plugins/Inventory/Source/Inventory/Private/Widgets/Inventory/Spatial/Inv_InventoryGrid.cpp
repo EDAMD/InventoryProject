@@ -17,6 +17,7 @@
 #include "Widgets/SlottedItem/Inv_SlottedItem.h"
 #include "Styling/SlateBrush.h"
 #include "GameplayTagContainer.h"
+#include "Widgets/Inventory/HoverItem/Inv_HoverItem.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -391,7 +392,24 @@ void UInv_InventoryGrid::AddStacks(const FInv_SlotAvailabilityResult& Result)
 
 void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Clicked on item at index %d"), GridIndex);
+	check(GridSlots.IsValidIndex(GridIndex));
+	UInv_InventoryItem* ClickedInventoryItem = GridSlots[GridIndex]->GetInventoryItem().Get();
+
+	if (!IsValid(HoverItem) && IsLeftClicked(MouseEvent))
+	{
+		// TODO: Pickup --- Assign the hover item and remove slotted item from the grid
+		HoverItem = CreateWidget<UInv_HoverItem>(this, HoverItemClass);
+	}
+}
+
+bool UInv_InventoryGrid::IsRightClicked(const FPointerEvent& MouseEvent) const
+{
+	return MouseEvent.GetEffectingButton() == EKeys::RightMouseButton;
+}
+
+bool UInv_InventoryGrid::IsLeftClicked(const FPointerEvent& MouseEvent) const
+{
+	return MouseEvent.GetEffectingButton() == EKeys::LeftMouseButton;
 }
 
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item)
