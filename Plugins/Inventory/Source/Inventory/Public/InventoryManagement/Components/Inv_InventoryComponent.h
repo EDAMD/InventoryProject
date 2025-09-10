@@ -13,6 +13,7 @@ class UInv_ItemComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInventoryItemChange, UInv_InventoryItem*, Item);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNoRoomInInventory);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStackChange, const FInv_SlotAvailabilityResult&, Result);
 
 /**
  * Inventory Management 负责创建并管理 InventoryMenu, 由PlayerController作为Owner
@@ -30,6 +31,7 @@ public:
 	FInventoryItemChange OnItemAdded;				// 当背包中添加物品时
 	FInventoryItemChange OnItemRemoved;				// 当背包中丢去物品时
 	FNoRoomInInventory NoRoomInInventory;			// 当背包中没有足够空间时
+	FStackChange OnStackChange;					// 当堆栈中数量变化时
 	/* End Delegates */
 
 	void ToggleInventoryMenu();

@@ -26,6 +26,7 @@ void UInv_InventoryGrid::NativeOnInitialized()
 
 	InventoryComponent = UInv_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
 	InventoryComponent->OnItemAdded.AddDynamic(this, &UInv_InventoryGrid::AddItem);
+	InventoryComponent->OnStackChange.AddDynamic(this, &UInv_InventoryGrid::AddStacks);
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
@@ -363,6 +364,11 @@ void UInv_InventoryGrid::ConstructGrid()
 			GridSlots.Add(GridSlot);
 		}
 	}
+}
+
+void UInv_InventoryGrid::AddStacks(const FInv_SlotAvailabilityResult& Result)
+{
+	
 }
 
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item)

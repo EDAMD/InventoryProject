@@ -71,6 +71,7 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 	{
 		// 添加栈数量 在 Inventory 上的已有的类型
 		// 只添加栈的数量, 不创建新的类型
+		OnStackChange.Broadcast(Result);
 		Server_AddStacksToItem(ItemComponent, Result.TotalRoomToFill, Result.Remainder);
 	}
 	else if (Result.TotalRoomToFill > 0)

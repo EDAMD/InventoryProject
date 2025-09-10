@@ -67,6 +67,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 TileSize;
 
+	UFUNCTION()
+	void AddStacks(const FInv_SlotAvailabilityResult& Result);
+
 	bool MatchesCategory(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
