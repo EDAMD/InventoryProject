@@ -20,3 +20,9 @@ void UInv_ItemComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(ThisClass, ItemManifest);
 }
 
+void UInv_ItemComponent::Pickedup()
+{
+	OnPickedup();
+	GetOwner()->Destroy();
+}
+

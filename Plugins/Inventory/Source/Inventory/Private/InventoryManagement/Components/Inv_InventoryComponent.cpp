@@ -6,6 +6,7 @@
 #include "Net/UnrealNetWork.h"
 #include "Items/Components/Inv_ItemComponent.h"
 #include "Items/Inv_InventoryItem.h"
+#include "Items/Fragments/Inv_ItemFragment.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
@@ -91,8 +92,8 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 		OnItemAdded.Broadcast(NewItem);
 	}
 
-	// TODO: Tell the Item Component to destroy it's ownering actor
-
+	// Tell the Item Component to destroy it's ownering actor
+	ItemComponent->Pickedup();
 }
 
 void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder)
@@ -103,8 +104,17 @@ void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemCom
 
 	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
 
-	// TODO: Destroy the item if the Remainder is zero
-	// otherwise, update the stack count for the item pickup.
+	// Destroy the item if the Remainder is zero
+	if (Remainder == 0)
+	{
+		ItemComponent->Pickedup();
+	}
+	else if (FInv_StackableFragment* StackableFragment = ItemComponent->GetItemManifest().GetFragmentOfTypeMutable<FInv_StackableFragment>())
+	{
+		// otherwise, update the stack count for the item pickup. 更改 ItemComponent 中 StackableFragment 的数值
+		StackableFragment->SetStackCount(StackCount);
+	}
+	
 }
 
 void UInv_InventoryComponent::ConstructInventory()

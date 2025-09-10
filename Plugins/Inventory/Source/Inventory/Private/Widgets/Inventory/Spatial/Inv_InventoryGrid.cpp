@@ -115,7 +115,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		// 4. 拾取物剩余数量
 		Result.Remainder = AmountToFill;
 
-		if (AmountToFill == 0) break;
+		if (AmountToFill == 0) return Result;
 	}
 
 

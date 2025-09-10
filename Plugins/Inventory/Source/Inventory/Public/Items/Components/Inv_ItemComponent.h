@@ -23,6 +23,11 @@ public:
 	FInv_ItemManifest GetItemManifest() { return ItemManifest; }
 	FString GetPickupMessage() { return PickupMessage; }
 
+	void Pickedup();	// 拾取后调用, 销毁物品
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Inventory")
+	void OnPickedup(); // Blueprint 中实现 拾取后调用
+
 protected:
 
 private:
