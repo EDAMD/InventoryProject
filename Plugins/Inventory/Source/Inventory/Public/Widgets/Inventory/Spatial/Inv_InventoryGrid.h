@@ -84,6 +84,7 @@ private:
 	void Pickup(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
 	void AssignHoverItem(UInv_InventoryItem* Item);
 	void AssignHoverItem(UInv_InventoryItem* Item, const int32 GridIndex, const int32 PrevoidGridIndex);
+	void RemoveItemFromGrid(UInv_InventoryItem* Item, const int32 GridIndex);
 
 	bool MatchesCategory(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);

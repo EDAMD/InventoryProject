@@ -417,6 +417,7 @@ void UInv_InventoryGrid::Pickup(UInv_InventoryItem* ClickedInventoryItem, const 
 	// Assign the hover item
 	AssignHoverItem(ClickedInventoryItem, GridIndex, GridIndex);
 	// remove clicked item from the grid
+	RemoveItemFromGrid(ClickedInventoryItem, GridIndex);
 	
 }
 
@@ -451,6 +452,31 @@ void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* Item)
 	HoverItem->SetStackable(Item->IsStackable());
 
 	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, HoverItem);
+
+}
+
+void UInv_InventoryGrid::RemoveItemFromGrid(UInv_InventoryItem* Item, const int32 GridIndex)
+{
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(Item, FragmentTags::GridFragment);
+	if (!GridFragment) return;
+
+	UInv_InventoryStatics::ForEach2D(GridSlots, GridIndex, GridFragment->GetGridSize(), Columns,
+		[](UInv_GridSlot* GridSlot)
+		{
+			GridSlot->SetInventoryItem(nullptr);
+			GridSlot->SetUpperLeftIndex(INDEX_NONE);
+			GridSlot->SetUnoccupiedTexture();
+			GridSlot->SetAvailable(true);
+			GridSlot->SetStackCount(0);
+		}
+	);
+
+	if (SlottedItems.Contains(GridIndex))
+	{
+		TObjectPtr<UInv_SlottedItem> FoundSlottedItem;
+		SlottedItems.RemoveAndCopyValue(GridIndex, FoundSlottedItem);
+		FoundSlottedItem->RemoveFromParent();
+	}
 
 }
 
