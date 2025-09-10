@@ -81,6 +81,8 @@ private:
 	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
 	bool IsRightClicked(const FPointerEvent& MouseEvent) const;
 	bool IsLeftClicked(const FPointerEvent& MouseEvent) const;
+	void Pickup(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
+	void AssignHoverItem(UInv_InventoryItem* Item);
 
 	bool MatchesCategory(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
