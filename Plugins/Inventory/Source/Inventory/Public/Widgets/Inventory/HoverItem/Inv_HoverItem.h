@@ -28,7 +28,7 @@ public:
 	bool IsStackable() const { return bStackable; }
 	void SetStackable(bool bStacks);
 	int32 GetPreviousGridIndex() const { return PreviousGridIndex; }
-	void SetPreviousGridIndex(bool Index) { PreviousGridIndex = Index; }
+	void SetPreviousGridIndex(int32 Index) { PreviousGridIndex = Index; }
 	FIntPoint GetGridDimensions() { return GridDimensions; }
 	void SetGridDimensions(const FIntPoint& Dimensions) { GridDimensions = Dimensions; }
 	UInv_InventoryItem* GetInventoryItem() const;

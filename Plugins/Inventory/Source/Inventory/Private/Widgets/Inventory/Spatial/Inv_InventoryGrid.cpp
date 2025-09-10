@@ -415,9 +415,17 @@ bool UInv_InventoryGrid::IsLeftClicked(const FPointerEvent& MouseEvent) const
 void UInv_InventoryGrid::Pickup(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex)
 {
 	// Assign the hover item
-	AssignHoverItem(ClickedInventoryItem);
+	AssignHoverItem(ClickedInventoryItem, GridIndex, GridIndex);
 	// remove clicked item from the grid
 	
+}
+
+void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* Item, const int32 GridIndex, const int32 PrevoidGridIndex)
+{
+	AssignHoverItem(Item);
+
+	HoverItem->SetPreviousGridIndex(PrevoidGridIndex);
+	HoverItem->UpdateStackCount(Item->IsStackable() ? GridSlots[GridIndex]->GetStackCount() : 0);
 }
 
 void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* Item)
