@@ -34,7 +34,7 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 
 	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
 
-	// TODO: Create a widget to show item icon and add it to the correct spot on the grid.
+	// Create a widget to show item icon and add it to the correct spot on the grid.
 	AddItemToIndices(Result, Item);
 }
 

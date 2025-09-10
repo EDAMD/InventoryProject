@@ -81,8 +81,11 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 
 void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
 {
+	// 后端添加
 	UInv_InventoryItem* NewItem = InventoryList.AddEntry(ItemComponent);
+	NewItem->SetTotalStackCount(StackCount);
 
+	// 前端添加
 	if (GetOwner()->GetNetMode() == NM_ListenServer || GetOwner()->GetNetMode() == NM_Standalone)
 	{
 		OnItemAdded.Broadcast(NewItem);
@@ -94,7 +97,14 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 
 void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder)
 {
+	const FGameplayTag& ItemType = ItemComponent->GetItemManifest().GetItemType();
+	UInv_InventoryItem* Item = InventoryList.FindFirstItemByType(ItemType);
+	if (!Item) return;
 
+	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
+
+	// TODO: Destroy the item if the Remainder is zero
+	// otherwise, update the stack count for the item pickup.
 }
 
 void UInv_InventoryComponent::ConstructInventory()
