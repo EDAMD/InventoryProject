@@ -43,9 +43,10 @@ void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Res
 {
 	for (const auto& Availability : Result.SlotAvailabilities)
 	{
+		// 更改 SlotItem 信息
 		AddItemAtIndex(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
 
-		// 更改背景格子信息
+		// 更改 GridSlot 信息
 		UpdateGridSlot(Item, Availability.Index, Result.bStackable, Availability.AmountToFill);
 	}
 
@@ -368,7 +369,24 @@ void UInv_InventoryGrid::ConstructGrid()
 
 void UInv_InventoryGrid::AddStacks(const FInv_SlotAvailabilityResult& Result)
 {
-	
+	if (!MatchesCategory(Result.Item.Get())) return;
+
+	for (const FInv_SlotAvailability& Availability : Result.SlotAvailabilities)
+	{
+		if (Availability.bItemAtIndex)	// 这个 Availability 是含有相同类型的 GridSlot 且堆栈有剩余可以填充, 故不用新建 SlotItem
+		{
+			const auto& GridSlot = GridSlots[Availability.Index];
+			const auto& SlotItem = SlottedItems[Availability.Index];
+			SlotItem->UpdateStackCount(GridSlot->GetStackCount() + Availability.AmountToFill);
+			GridSlot->SetStackCount(GridSlot->GetStackCount() + Availability.AmountToFill);
+		}
+		else // 这个 Availability 是数量超出之前 GridSlot 堆栈的最大数量, 新建的 GridSlot, 故新建一个 SlotItem
+		{
+			AddItemAtIndex(Result.Item.Get(), Availability.Index, Result.bStackable, Result.TotalRoomToFill);
+			UpdateGridSlot(Result.Item.Get(), Availability.Index, Result.bStackable, Result.TotalRoomToFill);
+		}
+	}
+
 }
 
 bool UInv_InventoryGrid::MatchesCategory(const UInv_InventoryItem* Item)
