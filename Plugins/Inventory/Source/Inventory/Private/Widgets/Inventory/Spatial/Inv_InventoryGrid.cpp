@@ -72,15 +72,35 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 	CurrentQueryResult = CheckHoverPosition(StartingCoordinate, Dimensions);
 }
 
-FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions) const
+FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions)
 {
 	FInv_SpaceQueryResult Result;
 
 	// in the grid bounds
 	if (!IsInGridBounds(UInv_WidgetUtils::GetIndexFromPosition(Position, Columns), Dimensions)) return Result;
-	// any item in the way
+
+	Result.bHasSpace = true;
 	
+	// any item in the way
+	TSet<int32> OccupiedUpperLeftIndices;
+	UInv_InventoryStatics::ForEach2D(GridSlots, UInv_WidgetUtils::GetIndexFromPosition(Position, Columns), Dimensions, Columns,
+		[&](const UInv_GridSlot* GridSlot)
+		{
+			if (GridSlot->GetInventoryItem().IsValid())
+			{
+				OccupiedUpperLeftIndices.Add(GridSlot->GetUpperLeftIndex());
+				Result.bHasSpace = false;
+			}
+		});
+
+
 	// if so, is there only one item in the way. (can we swap?)
+	if (OccupiedUpperLeftIndices.Num() == 1)
+	{
+		int32 index = *OccupiedUpperLeftIndices.CreateConstIterator();
+		Result.ValidItem = GridSlots[index]->GetInventoryItem();
+		Result.UpperLeftIndex = GridSlots[index]->GetUpperLeftIndex();
+	}
 
 	return Result;
 }
