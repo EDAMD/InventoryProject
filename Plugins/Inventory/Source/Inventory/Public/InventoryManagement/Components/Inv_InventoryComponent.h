@@ -31,7 +31,7 @@ public:
 	FInventoryItemChange OnItemAdded;				// 当背包中添加物品时
 	FInventoryItemChange OnItemRemoved;				// 当背包中丢去物品时
 	FNoRoomInInventory NoRoomInInventory;			// 当背包中没有足够空间时
-	FStackChange OnStackChange;					// 当堆栈中数量变化时
+	FStackChange OnStackChange;						// 当堆栈中数量变化时
 	/* End Delegates */
 
 	void ToggleInventoryMenu();

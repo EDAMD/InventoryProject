@@ -62,6 +62,7 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 	if (!IsValid(HoverItem)) return;
 
 	// Get hover item's dimensions
+	const FIntPoint Dimensions = HoverItem->GetGridDimensions();
 	
 	// Calculate the starting coordinate for highlighting
 	
@@ -69,6 +70,7 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 		// in the grid bounds
 		// any item in the way
 		// if so, is there only one item in the way. (can we swap?)
+		// 
 }
 
 FIntPoint UInv_InventoryGrid::CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const

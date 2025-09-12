@@ -66,6 +66,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UInv_HoverItem> HoverItem;
 
+	/*  */
 	FInv_TileParameters TileParameters;
 	FInv_TileParameters LastTileParameters;
 
@@ -73,6 +74,7 @@ private:
 	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	EInv_TileQuadrant CalculateQuadrant(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	void OnTileParametersUpdated(const FInv_TileParameters& Parameters);
+	/* End */
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
@@ -83,6 +85,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 TileSize;
 
+	/*  */
 	UFUNCTION()
 	void AddStacks(const FInv_SlotAvailabilityResult& Result);
 
@@ -94,7 +97,10 @@ private:
 	void AssignHoverItem(UInv_InventoryItem* Item);
 	void AssignHoverItem(UInv_InventoryItem* Item, const int32 GridIndex, const int32 PrevoidGridIndex);
 	void RemoveItemFromGrid(UInv_InventoryItem* Item, const int32 GridIndex);
+	/* End */
 
+
+	/*  */
 	bool MatchesCategory(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
@@ -135,7 +141,7 @@ private:
 	bool IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const;
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 	int32 GetStackAmount(const UInv_GridSlot* GridSlot) const;
-
+	/* End */
 
 
 };
