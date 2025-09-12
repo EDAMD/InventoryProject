@@ -74,6 +74,7 @@ private:
 	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	EInv_TileQuadrant CalculateQuadrant(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	void OnTileParametersUpdated(const FInv_TileParameters& Parameters);
+	FIntPoint CalculateStartingCoordinates(const FIntPoint& Coordinate, const FIntPoint Dimensions, const EInv_TileQuadrant Quadrant) const;
 	/* End */
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
