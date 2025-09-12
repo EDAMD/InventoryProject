@@ -69,12 +69,15 @@ private:
 	/*  */
 	FInv_TileParameters TileParameters;
 	FInv_TileParameters LastTileParameters;
+	int32 ItemDropIndex{ INDEX_NONE };		// Index where an item will be placed if we click on the grid at a valid location
+	FInv_SpaceQueryResult CurrentQueryResult;
 
 	void UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition);
 	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	EInv_TileQuadrant CalculateQuadrant(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	void OnTileParametersUpdated(const FInv_TileParameters& Parameters);
 	FIntPoint CalculateStartingCoordinates(const FIntPoint& Coordinate, const FIntPoint Dimensions, const EInv_TileQuadrant Quadrant) const;
+	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions) const;
 	/* End */
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
