@@ -28,6 +28,7 @@ class INVENTORY_API UInv_InventoryGrid : public UUserWidget
 
 public:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
 
@@ -67,6 +68,8 @@ private:
 
 	FInv_TileParameters TileParameters;
 	FInv_TileParameters LastTileParameters;
+
+	void UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition);
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
@@ -129,5 +132,7 @@ private:
 	bool IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const;
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 	int32 GetStackAmount(const UInv_GridSlot* GridSlot) const;
+
+
 
 };
