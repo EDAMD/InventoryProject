@@ -72,6 +72,7 @@ private:
 	void UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition);
 	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 	EInv_TileQuadrant CalculateQuadrant(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
+	void OnTileParametersUpdated(const FInv_TileParameters& Parameters);
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
