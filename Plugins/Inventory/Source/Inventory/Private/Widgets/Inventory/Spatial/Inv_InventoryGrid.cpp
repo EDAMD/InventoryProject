@@ -37,14 +37,31 @@ void UInv_InventoryGrid::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 	const FVector2D CanvasPosition = UInv_WidgetUtils::GetWidgetPosition(CanvasPanel);
 	const FVector2D MousePositon = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetOwningPlayer());
 
-
+	UpdateTileParameters(CanvasPosition, MousePositon);
 }
 
 void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition)
 {
-	// 1. Calculate the tile quadrant
-	
-	// 2. Handle highlight/unhighlight of the grid slots
+	// if mouse not in canvas panel. return
+
+	// Calculate the tile quadrant, tile index and coordinates
+	const FIntPoint HoveredTileCoordinates = CalculateHoveredCoordinates(CanvasPosition, MousePosition);
+
+	LastTileParameters = TileParameters;
+
+	TileParameters.TileCoordinates = HoveredTileCoordinates;
+	TileParameters.TileIndex = UInv_WidgetUtils::GetIndexFromPosition(HoveredTileCoordinates, Columns);
+
+
+	// Handle highlight/unhighlight of the grid slots
+}
+
+FIntPoint UInv_InventoryGrid::CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const
+{
+	return FIntPoint{
+		FMath::FloorToInt32((MousePosition.X - CanvasPosition.X) / TileSize),
+		FMath::FloorToInt32((MousePosition.Y - CanvasPosition.Y) / TileSize)
+	};
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
