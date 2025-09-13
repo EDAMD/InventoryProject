@@ -86,9 +86,13 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 
 	UnhighlightSlots(LastHighlightIndex, LastHighlightDimensions);
 
-	if (CurrentQueryResult.ValidItem.IsValid())
+	if (CurrentQueryResult.ValidItem.IsValid() && GridSlots.IsValidIndex(CurrentQueryResult.UpperLeftIndex))
 	{
-		// TODO: There's a single item in the space, we can swap or add stacks;
+		// There's a single item in the space, we can swap or add stacks;
+		const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(CurrentQueryResult.ValidItem.Get(), FragmentTags::GridFragment);
+		if (!GridFragment) return;
+
+		ChangeHoverType(CurrentQueryResult.UpperLeftIndex, GridFragment->GetGridSize(), EInv_GridSlotState::GrayedOut);
 	}
 
 }
@@ -169,6 +173,33 @@ void UInv_InventoryGrid::UnhighlightSlots(const int32 Index, const FIntPoint& Di
 				GridSlot->SetOccupiedTexture();
 			}
 		});
+}
+
+void UInv_InventoryGrid::ChangeHoverType(const int32 Index, const FIntPoint& Dimensions, EInv_GridSlotState GridSlotType)
+{
+	UnhighlightSlots(LastHighlightIndex, LastHighlightDimensions);
+
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns,
+		[State = GridSlotType](UInv_GridSlot* GridSlot)
+		{
+			switch (State)
+			{
+			case EInv_GridSlotState::Unoccupied:
+				GridSlot->SetUnoccupiedTexture();
+				break;
+			case EInv_GridSlotState::Occupied:
+				GridSlot->SetOccupiedTexture();
+				break;
+			case EInv_GridSlotState::Selected:
+				GridSlot->SetSelectedTexture();
+				break;
+			case EInv_GridSlotState::GrayedOut:
+				GridSlot->SetGrayedOutTexture();
+				break;
+			}
+		});
+	LastHighlightIndex = Index;
+	LastHighlightDimensions = Dimensions;
 }
 
 FIntPoint UInv_InventoryGrid::CalculateStartingCoordinates(const FIntPoint& Coordinate, const FIntPoint Dimensions, const EInv_TileQuadrant Quadrant) const
