@@ -32,7 +32,6 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
-
 	FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent);
 
 	UFUNCTION()
@@ -67,7 +66,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UInv_HoverItem> HoverItem;
 
-	/*  */
+	/* Highlight */
 	FInv_TileParameters TileParameters;
 	FInv_TileParameters LastTileParameters;
 	int32 ItemDropIndex{ INDEX_NONE };		// Index where an item will be placed if we click on the grid at a valid location
@@ -87,7 +86,7 @@ private:
 	void HighlightSlots(const int32 Index, const FIntPoint& Dimensions);
 	void UnhighlightSlots(const int32 Index, const FIntPoint& Dimensions);
 	void ChangeHoverType(const int32 Index, const FIntPoint& Dimensions, EInv_GridSlotState GridSlotType);
-	/* End */
+	/* End Highlight */
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 Rows;
@@ -98,10 +97,23 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	int32 TileSize;
 
-	/*  */
 	UFUNCTION()
 	void AddStacks(const FInv_SlotAvailabilityResult& Result);
 
+	/* */
+
+	UFUNCTION()
+	void OnGridSlotClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	UFUNCTION()
+	void OnGridSlotHovered(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	UFUNCTION()
+	void OnGridSlotUnhovered(int32 GridIndex, const FPointerEvent& MouseEvent);
+
+	/* End */
+
+	/* Click Slotted Item To Replace MouseCursor */
 	UFUNCTION()
 	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
 	bool IsRightClicked(const FPointerEvent& MouseEvent) const;
@@ -110,10 +122,10 @@ private:
 	void AssignHoverItem(UInv_InventoryItem* Item);
 	void AssignHoverItem(UInv_InventoryItem* Item, const int32 GridIndex, const int32 PrevoidGridIndex);
 	void RemoveItemFromGrid(UInv_InventoryItem* Item, const int32 GridIndex);
-	/* End */
+	/* End Click Slotted Item To Replace MouseCursor */
 
 
-	/*  */
+	/* Back Add Item To GridSlot */
 	bool MatchesCategory(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
 	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
@@ -154,7 +166,7 @@ private:
 	bool IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const;
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 	int32 GetStackAmount(const UInv_GridSlot* GridSlot) const;
-	/* End */
+	/* End Back Add Item To GridSlot */
 
 
 };
