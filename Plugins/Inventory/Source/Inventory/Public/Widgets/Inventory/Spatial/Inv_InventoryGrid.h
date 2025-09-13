@@ -73,6 +73,8 @@ private:
 	FInv_SpaceQueryResult CurrentQueryResult;
 	bool bMouseWithinCanvas;
 	bool bLastMouseWithinCanvas;
+	int32 LastHighlightIndex;
+	FIntPoint LastHighlightDimensions;
 
 	void UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition);
 	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
@@ -81,6 +83,8 @@ private:
 	FIntPoint CalculateStartingCoordinates(const FIntPoint& Coordinate, const FIntPoint Dimensions, const EInv_TileQuadrant Quadrant) const;
 	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions);
 	bool CursorExitedCanvas(const FVector2D& BoundaryPos, const FVector2D& BoundarySize, const FVector2D& Location);
+	void HighlightSlots(const int32 Index, const FIntPoint& Dimensions);
+	void UnhighlightSlots(const int32 Index, const FIntPoint& Dimensions);
 	/* End */
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
