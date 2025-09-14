@@ -111,6 +111,8 @@ private:
 	UFUNCTION()
 	void OnGridSlotUnhovered(int32 GridIndex, const FPointerEvent& MouseEvent);
 
+	void PutDownOnIndex(const int32 Index);
+	void ClearHoverItem();
 	/* End */
 
 	/* Click Slotted Item To Replace MouseCursor */
