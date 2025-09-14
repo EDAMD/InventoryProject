@@ -140,7 +140,7 @@ private:
 	/* End Show and Hide Mouse Cursor Widget */
 
 
-	/* Click Slotted Item To Replace MouseCursor */
+	/* Click Slotted Item */
 	UFUNCTION()
 	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent);
 	bool IsRightClicked(const FPointerEvent& MouseEvent) const;
@@ -151,8 +151,8 @@ private:
 	void RemoveItemFromGrid(UInv_InventoryItem* Item, const int32 GridIndex);
 	bool IsSameStackable(const UInv_InventoryItem* ClickedInventoryItem) const;
 	void SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
-
-	/* End Click Slotted Item To Replace MouseCursor */
+	bool ShouldSwapStackCount(const int32 RoomInClickedSlot, const int32 HoveredStackCount, const int32 MaxStackSize) const;
+	/* End Click Slotted Item */
 
 
 	/* Back Add Item To GridSlot */

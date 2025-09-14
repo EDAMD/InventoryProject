@@ -748,8 +748,19 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 	// Do the hover item and the clicked inventory item share a type, and are they stackable ?
 	if (IsSameStackable(ClickedInventoryItem))
 	{
-		// Should we swap their stack count ?
-		
+		const int32 ClickedStackCount = GridSlots[GridIndex]->GetStackCount();
+		const FInv_StackableFragment* StackableFragment = ClickedInventoryItem->GetItemManifest().GetFragmentOfType<FInv_StackableFragment>();
+		const int32 MaxStackSize = StackableFragment->GetMaxStackSize();
+		const int32 RoomInClickedSlot = MaxStackSize - ClickedStackCount;
+		const int32 HoveredStackCount = HoverItem->GetStackCount();
+
+		// Should we swap their stack count ? (Room in the Clicked slot == 0 && HoveredStackCount < MaxStackSize)
+		if (ShouldSwapStackCount(RoomInClickedSlot, HoveredStackCount, MaxStackSize))
+		{
+			// TODO: Swap stack counts.
+		}
+
+
 		// Should we consum the hover item's stacks ?
 		
 		// Should we fill in the stacks of the clicked item ? (and not consum the hover item)
@@ -785,6 +796,11 @@ void UInv_InventoryGrid::SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryI
 	AddItemAtIndex(TempInventoryItem, GridIndex, bTempIsStackable, TempStackCount);			// 添加之前的 Item
 	UpdateGridSlot(TempInventoryItem, GridIndex, bTempIsStackable, TempStackCount);			// 更新网格信息
 
+}
+
+bool UInv_InventoryGrid::ShouldSwapStackCount(const int32 RoomInClickedSlot, const int32 HoveredStackCount, const int32 MaxStackSize) const
+{
+	return RoomInClickedSlot == 0 && HoveredStackCount < MaxStackSize;
 }
 
 bool UInv_InventoryGrid::IsRightClicked(const FPointerEvent& MouseEvent) const
