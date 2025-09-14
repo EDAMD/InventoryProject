@@ -149,6 +149,9 @@ private:
 	void AssignHoverItem(UInv_InventoryItem* Item);
 	void AssignHoverItem(UInv_InventoryItem* Item, const int32 GridIndex, const int32 PrevoidGridIndex);
 	void RemoveItemFromGrid(UInv_InventoryItem* Item, const int32 GridIndex);
+	bool IsSameStackable(const UInv_InventoryItem* ClickedInventoryItem) const;
+	void SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
+
 	/* End Click Slotted Item To Replace MouseCursor */
 
 

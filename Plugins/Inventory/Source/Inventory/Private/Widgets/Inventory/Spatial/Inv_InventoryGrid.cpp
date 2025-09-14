@@ -746,13 +746,44 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 	}
 	
 	// Do the hover item and the clicked inventory item share a type, and are they stackable ?
+	if (IsSameStackable(ClickedInventoryItem))
+	{
 		// Should we swap their stack count ?
+		
 		// Should we consum the hover item's stacks ?
+		
 		// Should we fill in the stacks of the clicked item ? (and not consum the hover item)
+		
 		// Is there no room in the clicked slot ?
+	}
+
 
 	// Swap with the hover item.
+	SwapWithHoverItem(ClickedInventoryItem, GridIndex);
 
+}
+
+bool UInv_InventoryGrid::IsSameStackable(const UInv_InventoryItem* ClickedInventoryItem) const
+{
+	const bool bIsSameItem = ClickedInventoryItem == HoverItem->GetInventoryItem();
+	const bool bIsStackable = ClickedInventoryItem->IsStackable();
+
+	return bIsSameItem && bIsStackable && HoverItem->GetItemType().MatchesTagExact(ClickedInventoryItem->GetItemManifest().GetItemType());
+}
+
+void UInv_InventoryGrid::SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex)
+{
+	if (!IsValid(HoverItem)) return;
+
+	UInv_InventoryItem* TempInventoryItem = HoverItem->GetInventoryItem();
+	const int32 TempStackCount = HoverItem->GetStackCount();
+	const bool bTempIsStackable = HoverItem->IsStackable();
+
+	// Keep the same Previous Grid Index
+	AssignHoverItem(ClickedInventoryItem, GridIndex, HoverItem->GetPreviousGridIndex());	// 注册 HoverItem
+	RemoveItemFromGrid(ClickedInventoryItem, GridIndex);									// 移除被点击 Item
+	AddItemAtIndex(TempInventoryItem, GridIndex, bTempIsStackable, TempStackCount);			// 添加之前的 Item
+	UpdateGridSlot(TempInventoryItem, GridIndex, bTempIsStackable, TempStackCount);			// 更新网格信息
 
 }
 
