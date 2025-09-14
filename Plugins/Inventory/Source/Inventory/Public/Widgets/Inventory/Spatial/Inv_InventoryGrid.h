@@ -36,7 +36,12 @@ public:
 
 	UFUNCTION()
 	void AddItem(UInv_InventoryItem* Item);
-	
+
+	/* Show And Hide Mouse Cursor*/
+	void ShowCursor();
+	void HideCursor();
+	/* Show And Hide Mouse Cursor*/
+
 private:
 
 	void ConstructGrid();
@@ -114,6 +119,26 @@ private:
 	void PutDownOnIndex(const int32 Index);
 	void ClearHoverItem();
 	/* End */
+
+	/* Show and Hide Mouse Cursor Widget */
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> VisibleCursorWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> HiddenCursorWidget;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UUserWidget> VisibleCursorWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UUserWidget> HiddenCursorWidgetClass;
+
+	UUserWidget* GetVisibleCursorWidget();
+	UUserWidget* GetHiddenCursorWidget();
+
+	/* End Show and Hide Mouse Cursor Widget */
+
 
 	/* Click Slotted Item To Replace MouseCursor */
 	UFUNCTION()

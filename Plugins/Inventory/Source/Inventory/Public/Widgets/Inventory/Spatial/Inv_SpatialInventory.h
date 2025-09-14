@@ -57,5 +57,5 @@ private:
 
 	void DisableButton(UButton* Button);
 
-
+	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
 };
