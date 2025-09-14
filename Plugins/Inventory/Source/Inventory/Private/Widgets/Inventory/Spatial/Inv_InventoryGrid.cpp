@@ -777,9 +777,12 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 			return;
 		}
 
-		// Is there no room in the clicked slot ?
-
-		return;
+		// Clicked slot already full - do nothing (maybe play a sound)
+		if (RoomInClickedSlot == 0)
+		{
+			return;
+		}
+		
 	}
 
 
