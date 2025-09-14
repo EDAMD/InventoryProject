@@ -153,6 +153,8 @@ private:
 	void SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
 	bool ShouldSwapStackCount(const int32 RoomInClickedSlot, const int32 HoveredStackCount, const int32 MaxStackSize) const;
 	void SwapStackCount(const int32 ClickedStackCount, const int32 HoveredStackCount, const int32 Index);
+	bool ShouldConsumeHoverStacks(const int32 HoveredStackCount, const int32 RoomInClickedSlot) const;
+	void ConsumeHoverItemStacks(const int32 ClickedStackCount, const int32 HoveredStackCount, const int32 Index);
 	/* End Click Slotted Item */
 
 
