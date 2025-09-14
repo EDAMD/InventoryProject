@@ -738,11 +738,22 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 	check(GridSlots.IsValidIndex(GridIndex));
 	UInv_InventoryItem* ClickedInventoryItem = GridSlots[GridIndex]->GetInventoryItem().Get();
 
-	if (!IsValid(HoverItem) && IsLeftClicked(MouseEvent))
+	if (!IsValid(HoverItem) && IsLeftClicked(MouseEvent)) // 鼠标上没有任何物品, 仅仅鼠标点击捡起物品
 	{
 		// Pickup --- Assign the hover item and remove slotted item from the grid
 		Pickup(ClickedInventoryItem, GridIndex);
+		return;
 	}
+	
+	// Do the hover item and the clicked inventory item share a type, and are they stackable ?
+		// Should we swap their stack count ?
+		// Should we consum the hover item's stacks ?
+		// Should we fill in the stacks of the clicked item ? (and not consum the hover item)
+		// Is there no room in the clicked slot ?
+
+	// Swap with the hover item.
+
+
 }
 
 bool UInv_InventoryGrid::IsRightClicked(const FPointerEvent& MouseEvent) const
